@@ -12,8 +12,7 @@ class CategoryManager(models.Manager):
 
 
 class Category(models.Model):
-    parent = models.ForeignKey('Category', on_delete=models.SET_NULL, null=True, blank=True, related_name='children',
-                               verbose_name='زیر گروه')
+    parent = models.ForeignKey('Category', on_delete=models.SET_NULL, null=True, blank=True, related_name='children', verbose_name='زیر گروه')
     title = models.CharField(max_length=200, verbose_name='عنوان دسته بندی')
     slug = models.SlugField(max_length=100, unique=True, allow_unicode=True, verbose_name='آدرس دسته بندی')
     status = models.BooleanField(default=True, verbose_name='آیا نمایش داده شود؟')
