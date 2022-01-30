@@ -1,9 +1,43 @@
 {% extends 'registration/base.html' %}
 {% load crispy_forms_tags %}
-{% block title %}لیست مقالات{% endblock %}
+{% block title-meta %}{% block title %}لیست مقالات{% endblock %}{% endblock %}
 {% block main %}
-    <form method="post" enctype="multipart/form-data">{% csrf_token %}
-        {{ form|crispy }}
-        <button class="btn btn-success" type="submit">ارسال مقاله</button>
-    </form>
+    <div class="col-md-12">
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title mb-0 float-left">افزودن مقاله</h3>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">{% csrf_token %}
+                    <div class="form-row">
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.title|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.slug|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-12 mb-0">
+                            {{ form.description|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.category|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.thumbnail|as_crispy_field }}
+                            {{ form.publish|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.author|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.status|as_crispy_field }}
+                        </div>
+                    </div>
+                    <button class="btn btn-success" type="submit">ارسال مقاله</button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
 {% endblock %}
