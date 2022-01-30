@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load base_tags %}
+{% load static %}
+{% block main %}
+    <!-- Page Header-->
+    <header class="masthead" style="background-image: url('{% static "blog/assets/img/home-bg.jpg" %}')">
+        <div class="container position-relative px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-md-10 col-lg-8 col-xl-7">
+                    <div class="site-heading">
+                        <h1>نام وبلاگ</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="container px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+            <div class="col-md-10 col-lg-8 col-xl-7">
+                <!-- Post preview-->
+                {% for article in articles %}
+                    <div class="post-preview">
+                        <a href="{% url 'blog:detail' article.slug %}">
+                            <h2 class="post-title">{{ article.title }}</h2>
+                            <h3 class="post-subtitle">{{ article.description|truncatewords:30 }}</h3>
+                        </a>
+                        <p class="post-meta">
+                            نوشته شده توسط
+                            <a href="{% url 'blog:author' article.author.username %}">{{ article.author.get_full_name }}</a>
+                            در {{ article.jpublish }}
+                        </p>
+                        <div>
+                            {% for cat in article.category_publish %}
+                                <a href="{% url 'blog:category' cat.slug %}">#{{ cat.title }}</a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <hr class="my-4"/>
+                {% endfor %}
+                <!-- Pager-->
+                {% if is_paginated %}
+                    <div class="d-flex justify-content-center mb-4" style="direction: ltr">
+                        <ul class="pagination">
+                            {% if page_obj.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link"
+                                       href="{% url 'blog:home' %}?page={{ page_obj.previous_page_number }}">&laquo;</a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled">
+                                    <a class="page-link">&laquo;</a>
+                                </li>
+                            {% endif %}
+                            {% page_range paginator page_obj.number as pages %}
+                            {% for i in pages %}
+                                {% if page_obj.number == i %}
+                                    <li class="page-item active" aria-current="page">
+                                        <a class="page-link" href="{% url 'blog:home' %}?page={{ i }}">{{ i }}</a>
+                                    </li>
+                                {% else %}
+                                    {% if i == paginator.ELLIPSIS %}
+                                        <li class="page-item">
+                                            <span class="page-link">{{ paginator.ELLIPSIS }}</span>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="{% url 'blog:home' %}?page={{ i }}">{{ i }}</a>
+                                        </li>
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                            {% if page_obj.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link"
+                                       href="{% url 'blog:home' %}?page={{ page_obj.next_page_number }}">&raquo;</a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#">&raquo;</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,6 @@
+*__pycache__
+.idea
+#virtualenv
+venv/
+#database
+db.sqlite3

@@ -1,0 +1,28 @@
+@font-face {
+    font-family: 'Tanha';
+    src: url('../fonts/Tanha.eot');
+    src: url('../fonts/Tanha.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/Tanha.woff') format('woff'),
+         url('../fonts/Tanha.ttf') format('truetype');
+    font-weight: normal;
+}
+
+body{
+    direction: rtl !important;
+    text-align: right !important;
+    font-family: Tanha !important;
+}
+
+.my-font, .focus-input100::after{
+    font-family: Tanha;
+}
+.btn-show-pass {
+    right: initial;
+    left: 0;
+}
+
+.errors{
+    color: red;
+    background-color: #fbd4d4;
+    padding: 20px 30px;
+}
