@@ -40,9 +40,7 @@
 <div class="limiter">
     {% if form.non_field_errors %}
         <div class="errors">
-            {% for error in form.non_field_errors %}
-                <span>{{ error }}</span>
-            {% endfor %}
+            {{ form.non_field_errors }}
         </div>
     {% endif %}
     <div class="container-login100">

@@ -1,6 +1,8 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
 from django.views.generic import ListView, CreateView
+
+from accounts.mixins import FieldsMixin
 from blog.models import Article
 
 
@@ -12,7 +14,13 @@ class ArticleList(LoginRequiredMixin, ListView):
             return Article.objects.all()
         return Article.objects.filter(author=self.request.user)
 
-class ArticleCreate(LoginRequiredMixin, CreateView):
+class ArticleCreate(LoginRequiredMixin, FieldsMixin, CreateView):
     model = Article
-    fields = ('author', 'title', 'category', 'slug', 'description', 'thumbnail', 'publish', 'status')
     template_name = 'registration/article-create-update.html'
+
+    def form_valid(self, form):
+        if not self.request.user.is_superuser:
+            self.object = form.save(commit=False)
+            self.object.author = self.request.user
+            self.object.status = 'd'
+        return super().form_valid(form)

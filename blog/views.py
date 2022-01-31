@@ -1,8 +1,9 @@
+from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from django.views.generic import DetailView, ListView
-from django.contrib.auth.models import User
 from blog.models import Article, Category
 
+User = get_user_model()
 
 class Home(ListView):
     template_name = 'index.html'
