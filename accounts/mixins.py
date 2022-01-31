@@ -30,3 +30,10 @@ class AuthorAccessMixin:
             return obj
         raise Http404
 
+
+class SuperUserAccessMixin:
+
+    def dispatch(self, request, *args, **kwargs):
+        if self.request.user.is_superuser:
+            return super().dispatch(request, *args, **kwargs)
+        raise Http404
