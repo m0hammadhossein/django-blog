@@ -1,6 +1,6 @@
 from django.contrib.auth import views
 from django.urls import path
-from .views import ArticleList, ArticleCreate, ArticleUpdate, ArticleDelete
+from .views import ArticleList, ArticleCreate, ArticleUpdate, ArticleDelete, LogoutAccount
 
 app_name = 'accounts'
 
@@ -10,7 +10,7 @@ urlpatterns = [
     path('article/create', ArticleCreate.as_view(), name='article-create'),
     path('article/update/<int:pk>/', ArticleUpdate.as_view(), name='article-update'),
     path('article/delete/<int:pk>/', ArticleDelete.as_view(), name='article-delete'),
-    # path('logout/', views.LogoutView.as_view(), name='logout'),
+    path('logout/', LogoutAccount.as_view(), name='logout'),
     # path('password_change/', views.PasswordChangeView.as_view(), name='password_change'),
     # path('password_change/done/', views.PasswordChangeDoneView.as_view(), name='password_change_done'),
     # path('password_reset/', views.PasswordResetView.as_view(), name='password_reset'),

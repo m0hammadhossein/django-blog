@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import LogoutView
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from accounts.mixins import FieldsMixin, FormValidMixin, AuthorAccessMixin, SuperUserAccessMixin
@@ -29,3 +30,6 @@ class ArticleDelete(SuperUserAccessMixin, DeleteView):
     model = Article
     success_url = reverse_lazy('accounts:home')
     template_name = 'registration/delete.html'
+
+class LogoutAccount(LogoutView):
+    next_page = reverse_lazy('accounts:login')
