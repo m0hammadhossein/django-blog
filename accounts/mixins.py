@@ -11,3 +11,22 @@ class FieldsMixin:
             raise Http404
 
         return super().dispatch(request, *args, **kwargs)
+
+
+class FormValidMixin:
+    def form_valid(self, form):
+        if not self.request.user.is_superuser:
+            self.object = form.save(commit=False)
+            self.object.author = self.request.user
+            self.object.status = 'd'
+        return super().form_valid(form)
+
+
+class AuthorAccessMixin:
+
+    def get_object(self, queryset=None):
+        obj = super().get_object(queryset=queryset)
+        if self.request.user.is_superuser or (obj.author == self.request.user and obj.status == 'd'):
+            return obj
+        raise Http404
+
