@@ -5,7 +5,7 @@ from blog.models import Article, Category
 
 @admin.register(Article)
 class ArticleAdmin(admin.ModelAdmin):
-    list_display = ('title', 'slug', 'author', 'thumbnail_tag', 'jpublish', 'status', 'category_to_str')
+    list_display = ('title', 'slug', 'author', 'thumbnail_tag', 'jpublish', 'is_special', 'status', 'category_to_str')
     list_filter = ('publish', 'status')
     raw_id_fields = ('author',)
     actions = ('make_published', 'make_draft')

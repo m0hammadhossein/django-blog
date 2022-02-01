@@ -36,8 +36,10 @@ class ArticleManager(models.Manager):
 
 class Article(models.Model):
     STATUS_CHOICES = (
-        ('d', 'پیش نویس'),
-        ('p', 'منتشر شده'),
+        ('d', 'پیش نویس'), #draft
+        ('p', 'منتشر شده'), #publish
+        ('i', 'در حال بررسی'), #investigation
+        ('b', 'برگشت داده شده'), #back
     )
     objects = ArticleManager()
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='articles', verbose_name='نویسنده')
@@ -50,6 +52,7 @@ class Article(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=1, choices=STATUS_CHOICES, verbose_name='وضعیت')
+    is_special = models.BooleanField(default=False, verbose_name='مقاله ویژه')
 
     class Meta:
         verbose_name = 'مقاله'

@@ -18,7 +18,18 @@
             <div class="container px-4 px-lg-5">
                 <div class="row gx-4 gx-lg-5 justify-content-center">
                     <div class="col-md-10 col-lg-8 col-xl-7 text-justify">
-                        {{ article.description|safe }}
+                        {% if article.is_special %}
+                            {% if user.is_authenticated and user.is_special_user or user == article.author or user.is_superuser %}
+                                {{ article.description|safe }}
+                            {% else %}
+                                <p>این مقاله ویژه است و برای مشاهده آن باید
+                                    <a href="#">اشتراک ویژه</a>
+                                    تهیه نمایید.
+                                </p>
+                            {% endif %}
+                        {% else %}
+                            {{ article.description|safe }}
+                        {% endif %}
                     </div>
                 </div>
             </div>

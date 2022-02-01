@@ -14,6 +14,7 @@
                             <th>نویسنده</th>
                             <th>خلاصه مقاله</th>
                             <th>زمان انتشار</th>
+                            <th>مقاله ویژه</th>
                             <th>وضعیت</th>
                         </tr>
                         </thead>
@@ -21,7 +22,7 @@
                         {% for article in articles %}
                             <tr>
                                 <td>
-                                    {% if article.status == 'd' or user.is_superuser %}
+                                    {% if article.status in 'bd'|make_list or user.is_superuser %}
                                         <a href="{% url 'accounts:article-update' article.pk %}">{{ article.title }}</a>
                                     {% else %}
                                         {{ article.title }}
@@ -33,15 +34,33 @@
                                 <td>{{ article.description|striptags|truncatewords:30 }}</td>
                                 <td>{{ article.jpublish }}</td>
                                 <td>
+                                    {% if article.is_special %}
+                                        <i class="fa fa-check-circle text-green"></i>
+                                    {% else %}
+                                        <i class="fa fa-minus-circle text-red"></i>
+                                    {% endif %}
+                                </td>
+                                <td>
                                     {% if article.status == 'p' %}
                                         <span class="badge badge-success">منتشر شده</span>
-                                        <a class="badge badge-primary" href="{% url 'blog:detail' article.slug %}">نمایش</a>
+                                        <a class="badge badge-primary"
+                                           href="{% url 'blog:detail' article.slug %}">نمایش</a>
+                                    {% elif article.status == 'i' %}
+                                        <span class="badge badge-info">در حال بررسی</span>
+                                        {% if user.is_superuser %}
+                                            <a class="badge badge-secondary" href="{% url 'blog:preview' article.pk %}">پیش نمایش</a>
+                                        {% endif %}
                                     {% else %}
-                                        <span class="badge badge-danger">پیش نویس</span>
-                                        <a class="badge badge-secondary" href="{% url 'blog:preview' article.pk %}">پیش نمایش</a>
+                                        {% if article.status == 'd' %}
+                                            <span class="badge badge-danger">پیش نویس</span>
+                                        {% else %}
+                                            <span class="badge badge-warning">برگشت داده شده</span>
+                                            <a class="badge badge-secondary" href="{% url 'blog:preview' article.pk %}">پیش نمایش</a>
+                                        {% endif %}
                                     {% endif %}
                                     {% if user.is_superuser %}
-                                        <a class="badge text-danger" href="{% url 'accounts:article-delete' article.pk %}">حذف</a>
+                                        <a class="badge text-danger"
+                                           href="{% url 'accounts:article-delete' article.pk %}">حذف</a>
                                     {% endif %}
                                 </td>
                             </tr>

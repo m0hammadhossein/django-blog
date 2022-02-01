@@ -34,6 +34,9 @@
                                 {{ form.status|as_crispy_field }}
                             </div>
                         {% endif %}
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.is_special|as_crispy_field }}
+                        </div>
                     </div>
                     <button class="btn btn-success" type="submit">ارسال مقاله</button>
                     {% if user.is_superuser and request.resolver_match.kwargs.pk %}
