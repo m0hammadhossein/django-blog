@@ -4,6 +4,10 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from accounts.mixins import FieldsMixin, FormValidMixin, AuthorAccessMixin, SuperUserAccessMixin
 from blog.models import Article
+from .forms import ProfileForm
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 
 class ArticleList(LoginRequiredMixin, ListView):
@@ -30,6 +34,21 @@ class ArticleDelete(SuperUserAccessMixin, DeleteView):
     model = Article
     success_url = reverse_lazy('accounts:home')
     template_name = 'registration/delete.html'
+
+
+class Profile(LoginRequiredMixin, UpdateView):
+    template_name = 'registration/profile.html'
+    success_url = reverse_lazy('accounts:profile')
+    form_class = ProfileForm
+
+    def get_object(self, queryset=None):
+        return User.objects.get(pk=self.request.user.pk)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
 
 class LogoutAccount(LogoutView):
     next_page = reverse_lazy('accounts:login')
