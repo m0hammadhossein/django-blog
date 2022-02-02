@@ -21,7 +21,11 @@
                 {% for article in articles %}
                     <div class="post-preview">
                         <a href="{% url 'blog:detail' article.slug %}">
-                            <h2 class="post-title">{{ article.title }}</h2>
+                            <h2 class="post-title">{{ article.title }}
+                                {% if article.is_special %}
+                                    <span class="badge bg-danger" style="font-size: 14px;">ویژه</span>
+                                {% endif %}
+                            </h2>
                             <h3 class="post-subtitle">{{ article.description|striptags|truncatewords:30 }}</h3>
                         </a>
                         <p class="post-meta">

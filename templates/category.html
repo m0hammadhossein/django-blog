@@ -24,7 +24,7 @@
                     <div class="post-preview">
                         <a href="{% url 'blog:detail' article.slug %}">
                             <h2 class="post-title">{{ article.title }}</h2>
-                            <h3 class="post-subtitle">{{ article.description|truncatewords:30 }}</h3>
+                            <h3 class="post-subtitle">{{ article.description|striptags|truncatewords:30 }}</h3>
                         </a>
                         <p class="post-meta">
                             نوشته شده توسط

@@ -4724,6 +4724,18 @@ textarea.form-control-lg {
   white-space: nowrap;
   vertical-align: baseline;
 }
+.badge {
+	display: inline-block;
+	padding: .35em .65em;
+	font-size: .75em;
+	font-weight: 700;
+	line-height: 1;
+	color: #fff;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: baseline;
+	border-radius: .25rem;
+}
 .badge:empty {
   display: none;
 }

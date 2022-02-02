@@ -1,8 +1,8 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.views import LogoutView
+from django.contrib.auth.views import LogoutView, LoginView
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from accounts.mixins import FieldsMixin, FormValidMixin, AuthorAccessMixin, SuperUserAccessMixin
+from accounts.mixins import FieldsMixin, FormValidMixin, AuthorAccessMixin, SuperUserAccessMixin, AuthorsAccessMixin
 from blog.models import Article
 from .forms import ProfileForm
 from django.contrib.auth import get_user_model
@@ -10,7 +10,7 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
-class ArticleList(LoginRequiredMixin, ListView):
+class ArticleList(AuthorsAccessMixin, ListView):
     context_object_name = 'articles'
     template_name = 'registration/home.html'
 
@@ -20,7 +20,7 @@ class ArticleList(LoginRequiredMixin, ListView):
         return Article.objects.filter(author=self.request.user)
 
 
-class ArticleCreate(LoginRequiredMixin, FieldsMixin, FormValidMixin, CreateView):
+class ArticleCreate(AuthorsAccessMixin, FieldsMixin, FormValidMixin, CreateView):
     model = Article
     template_name = 'registration/article-create-update.html'
 
@@ -48,6 +48,12 @@ class Profile(LoginRequiredMixin, UpdateView):
         kwargs = super().get_form_kwargs()
         kwargs['user'] = self.request.user
         return kwargs
+
+
+class LoginAccount(LoginView):
+    def get_success_url(self):
+        if not self.request.user.is_superuser:
+            return reverse_lazy('accounts:profile')
 
 
 class LogoutAccount(LogoutView):

@@ -1,10 +1,12 @@
 from django.http import Http404
+from django.shortcuts import redirect
 
 
 class FieldsMixin:
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_superuser:
-            self.fields = ('author', 'title', 'category', 'slug', 'description', 'thumbnail', 'publish', 'is_special', 'status')
+            self.fields = (
+            'author', 'title', 'category', 'slug', 'description', 'thumbnail', 'publish', 'is_special', 'status')
         elif request.user.is_author:
             self.fields = ('title', 'category', 'slug', 'description', 'thumbnail', 'publish', 'is_special')
         else:
@@ -29,6 +31,14 @@ class AuthorAccessMixin:
         if self.request.user.is_superuser or (obj.author == self.request.user and obj.status in ('d', 'b')):
             return obj
         raise Http404
+
+
+class AuthorsAccessMixin:
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_superuser or request.user.is_author:
+            return super().dispatch(request, *args, **kwargs)
+        return redirect('accounts:profile')
 
 
 class SuperUserAccessMixin:
