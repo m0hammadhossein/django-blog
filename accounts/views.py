@@ -54,6 +54,7 @@ class LoginAccount(LoginView):
     def get_success_url(self):
         if not self.request.user.is_superuser:
             return reverse_lazy('accounts:profile')
+        return reverse_lazy('accounts:home')
 
 
 class LogoutAccount(LogoutView):
