@@ -1,5 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.views import LogoutView, LoginView
+from django.contrib.auth.views import LogoutView, LoginView, PasswordChangeView, PasswordChangeDoneView
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from accounts.mixins import FieldsMixin, FormValidMixin, AuthorAccessMixin, SuperUserAccessMixin, AuthorsAccessMixin
@@ -52,10 +52,16 @@ class Profile(LoginRequiredMixin, UpdateView):
 
 class LoginAccount(LoginView):
     def get_success_url(self):
-        if not self.request.user.is_superuser:
-            return reverse_lazy('accounts:profile')
-        return reverse_lazy('accounts:home')
+        if self.request.user.is_superuser or self.request.user.is_author:
+            return reverse_lazy('accounts:home')
+        return reverse_lazy('accounts:profile')
 
+class PasswordChange(PasswordChangeView):
+    template_name = 'registration/password_change.html'
+    success_url = reverse_lazy('accounts:password_change_done')
+
+class PasswordChangeDone(PasswordChangeDoneView):
+    template_name = 'registration/password_changed.html'
 
 class LogoutAccount(LogoutView):
     next_page = reverse_lazy('accounts:login')

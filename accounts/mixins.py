@@ -5,10 +5,9 @@ from django.shortcuts import redirect
 class FieldsMixin:
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_superuser:
-            self.fields = (
-            'author', 'title', 'category', 'slug', 'description', 'thumbnail', 'publish', 'is_special', 'status')
+            self.fields = ('author', 'title', 'category', 'slug', 'description', 'thumbnail', 'publish', 'is_special', 'status')
         elif request.user.is_author:
-            self.fields = ('title', 'category', 'slug', 'description', 'thumbnail', 'publish', 'is_special')
+            self.fields = ('title', 'category', 'slug', 'description', 'thumbnail', 'publish', 'is_special', 'status')
         else:
             raise Http404
 
@@ -20,7 +19,8 @@ class FormValidMixin:
         if not self.request.user.is_superuser:
             self.object = form.save(commit=False)
             self.object.author = self.request.user
-            self.object.status = 'd'
+            if self.object.status != 'i':
+                self.object.status = 'd'
         return super().form_valid(form)
 
 
@@ -36,9 +36,12 @@ class AuthorAccessMixin:
 class AuthorsAccessMixin:
 
     def dispatch(self, request, *args, **kwargs):
-        if request.user.is_superuser or request.user.is_author:
-            return super().dispatch(request, *args, **kwargs)
+        if request.user.is_authenticated:
+            if request.user.is_superuser or request.user.is_author:
+                return super().dispatch(request, *args, **kwargs)
+            return redirect('accounts:profile')
         return redirect('accounts:profile')
+
 
 
 class SuperUserAccessMixin:
