@@ -5,6 +5,7 @@ from django.contrib.auth.views import \
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
 from django.http import HttpResponse
+from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.utils.encoding import force_bytes, force_str
@@ -98,6 +99,7 @@ class LogoutAccount(LogoutView):
 
 
 def activate(request, uidb64, token):
+    context = {'activate': False}
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))
         user = User.objects.get(pk=uid)
@@ -106,9 +108,8 @@ def activate(request, uidb64, token):
     if user is not None and account_activation_token.check_token(user, token):
         user.is_active = True
         user.save()
-        return HttpResponse('اکانت شما با موفقیت فعال شد.برای ورود کلیک کنید')
-    else:
-        return HttpResponse('لینک فعال سازی منقضی شده است.دوباره امتحان کنید')
+        context['activate'] = True
+    return render(request, 'registration/email_activate.html', context=context)
 
 
 class Register(CreateView):
@@ -129,4 +130,4 @@ class Register(CreateView):
         })
         to_email = form.cleaned_data.get('email')
         send_mail(mail_subject, message, 'youremail', [to_email])
-        return HttpResponse('لینک فعال سازی به ایمیل شما ارسال شد.')
+        return render(self.request, 'registration/email_activate_url.html')

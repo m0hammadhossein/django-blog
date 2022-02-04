@@ -1,0 +1,21 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>فعال سازی حساب</title>
+    <link rel="stylesheet" href="{% static "accounts/adminlte/assets/css/custom.css" %}">
+</head>
+<body>
+<div style="text-align: center;">
+    {% if activate %}
+        <h2>اکانت شما با موفقیت فعال شد.برای
+            <a href="{% url 'accounts:login' %}">ورود</a>
+            کلیک کنید.</h2>
+    {% else %}
+        <h3>لینک فعال سازی منقضی شده است.دوباره امتحان کنید</h3>
+    {% endif %}
+</div>
+</body>
+</html>
