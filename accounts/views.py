@@ -1,5 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.views import LogoutView, LoginView, PasswordChangeView, PasswordChangeDoneView
+from django.contrib.auth.views import \
+    (LogoutView, LoginView, PasswordChangeView, PasswordChangeDoneView,
+     PasswordResetView, PasswordResetConfirmView, PasswordResetDoneView, PasswordResetCompleteView)
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from accounts.mixins import FieldsMixin, FormValidMixin, AuthorAccessMixin, SuperUserAccessMixin, AuthorsAccessMixin
@@ -56,12 +58,33 @@ class LoginAccount(LoginView):
             return reverse_lazy('accounts:home')
         return reverse_lazy('accounts:profile')
 
+
 class PasswordChange(PasswordChangeView):
     template_name = 'registration/password_change.html'
     success_url = reverse_lazy('accounts:password_change_done')
 
+
 class PasswordChangeDone(PasswordChangeDoneView):
     template_name = 'registration/password_changed.html'
+
+
+class PasswordReset(PasswordResetView):
+    email_template_name = 'registration/password_reset_email_text.html'
+    template_name = 'registration/password_reset.html'
+    success_url = reverse_lazy('accounts:password_reset_done')
+
+
+class PasswordResetConfirm(PasswordResetConfirmView):
+    success_url = reverse_lazy('accounts:password_reset_complete')
+
+
+class PasswordResetDone(PasswordResetDoneView):
+    template_name = 'registration/password_reseted.html'
+
+
+class PasswordResetComplete(PasswordResetCompleteView):
+    template_name = 'registration/password_reset_completed.html'
+
 
 class LogoutAccount(LogoutView):
     next_page = reverse_lazy('accounts:login')

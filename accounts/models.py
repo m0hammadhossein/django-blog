@@ -5,6 +5,7 @@ from django.utils import timezone
 
 class User(AbstractUser):
     is_author = models.BooleanField(default=False, verbose_name='وضعیت نویسندگی')
+    email = models.EmailField(unique=True, verbose_name='ایمیل')
     special_user = models.DateTimeField(default=timezone.now, verbose_name='کاربر ویژه تا')
 
     def is_special_user(self):
