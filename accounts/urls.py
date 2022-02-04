@@ -2,12 +2,13 @@ from django.urls import path
 from .views import \
     (ArticleList, ArticleCreate, ArticleUpdate, ArticleDelete,
      LogoutAccount, Profile, LoginAccount, PasswordChange, PasswordChangeDone, PasswordReset,
-     PasswordResetConfirm, PasswordResetDone, PasswordResetComplete)
+     PasswordResetConfirm, PasswordResetDone, PasswordResetComplete, activate, Register)
 
 app_name = 'accounts'
 
 urlpatterns = [
     path('login/', LoginAccount.as_view(), name='login'),
+    path('register/', Register.as_view(), name='register'),
     path('', ArticleList.as_view(), name='home'),
     path('article/create', ArticleCreate.as_view(), name='article-create'),
     path('article/update/<int:pk>/', ArticleUpdate.as_view(), name='article-update'),
@@ -20,4 +21,5 @@ urlpatterns = [
     path('password_reset/done/', PasswordResetDone.as_view(), name='password_reset_done'),
     path('reset/<uidb64>/<token>/', PasswordResetConfirm.as_view(), name='password_reset_confirm'),
     path('reset/done/', PasswordResetComplete.as_view(), name='password_reset_complete'),
+    path('activate/<uidb64>/<token>', activate, name='activate'),
 ]
