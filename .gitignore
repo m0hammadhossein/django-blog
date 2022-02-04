@@ -1,6 +1,8 @@
 *__pycache__
 .idea
 .env
+migrations
+!migrations/__init__.py
 #virtualenv
 venv/
 #database

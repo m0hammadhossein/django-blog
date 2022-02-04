@@ -10,3 +10,17 @@
         <td><img src="images/4.png" height = 150px/></td>
     </tr>
 </table>
+
+##install
+
+```
+pip install -r requirements
+python manage.py makemigrations
+python manage.py migrate
+```
+###create superuser
+
+```
+python manage.py createsuperuser
+```
+<p>After all these steps , you can start testing and developing this project.</p>
