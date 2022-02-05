@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'accounts.apps.AccountsConfig',
     'widget_tweaks',
     'crispy_forms',
+    'django_gravatar',
 ]
 
 MIDDLEWARE = [

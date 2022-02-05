@@ -1,7 +1,8 @@
 {% extends 'registration/base.html' %}
 {% block title-meta %}{% block title %}لیست مقالات{% endblock %}{% endblock %}
 {% block main %}
-    <div class="row">
+    {% if articles.exists %}
+        <div class="row">
         <div class="col-12">
             <div class="card">
                 <div class="card-body table-responsive p-0">
@@ -73,4 +74,7 @@
             <!-- /.card -->
         </div>
     </div>
+    {% else %}
+        <h4>محتوایی برای نمایش وجود ندارد.</h4>
+    {% endif %}
 {% endblock %}
