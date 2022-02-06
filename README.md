@@ -11,7 +11,7 @@
     </tr>
 </table>
 
-##install
+## install
 
 <p>
 Enter your email and secret key in <b>.env</b> file
@@ -23,7 +23,7 @@ python manage.py makemigrations
 python manage.py migrate
 ```
 
-###create superuser
+### create superuser
 
 ```
 python manage.py createsuperuser
