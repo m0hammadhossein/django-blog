@@ -1,8 +1,10 @@
-import jdatetime
+from django.contrib.contenttypes.fields import GenericRelation
+from comment.models import Comment
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
+import jdatetime
 
 User = get_user_model()
 
@@ -53,6 +55,7 @@ class Article(models.Model):
     updated = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=1, choices=STATUS_CHOICES, verbose_name='وضعیت')
     is_special = models.BooleanField(default=False, verbose_name='مقاله ویژه')
+    comments = GenericRelation(Comment)
 
     class Meta:
         verbose_name = 'مقاله'

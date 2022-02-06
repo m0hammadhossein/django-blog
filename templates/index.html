@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load base_tags %}
+{% load ratings %}
 {% load static %}
 {% block main %}
     <!-- Page Header-->
@@ -26,6 +27,7 @@
                                     <span class="badge bg-danger" style="font-size: 14px;">ویژه</span>
                                 {% endif %}
                             </h2>
+                            <div>{% ratings article %}</div>
                             <h3 class="post-subtitle">{{ article.description|striptags|truncatewords:30 }}</h3>
                         </a>
                         <p class="post-meta">

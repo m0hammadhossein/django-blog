@@ -60,8 +60,12 @@ class Profile(LoginRequiredMixin, UpdateView):
 
 
 class LoginAccount(LoginView):
+
     def get_success_url(self):
-        if self.request.user.is_superuser or self.request.user.is_author:
+        redirect_url = super().get_redirect_url()
+        if redirect_url:
+            return redirect_url
+        elif self.request.user.is_superuser or self.request.user.is_author:
             return reverse_lazy('accounts:home')
         return reverse_lazy('accounts:profile')
 

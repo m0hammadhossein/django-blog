@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 from os import getenv
 from pathlib import Path
+
+from django.urls import reverse_lazy
 from dotenv import load_dotenv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -42,6 +44,8 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'crispy_forms',
     'django_gravatar',
+    'star_ratings',
+    'comment',
 ]
 
 MIDDLEWARE = [
@@ -117,6 +121,7 @@ USE_I18N = True
 
 USE_TZ = True
 
+STAR_RATINGS_STAR_HEIGHT = 16
 AUTH_USER_MODEL = 'accounts.User'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
@@ -126,6 +131,7 @@ EMAIL_HOST_USER = getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = getenv('EMAIL_HOST_PASSWORD')
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
+LOGIN_URL = reverse_lazy('accounts:login')
 LOGIN_REDIRECT_URL = 'accounts:home'
 STATIC_URL = 'static/'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'

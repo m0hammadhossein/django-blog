@@ -1,41 +1,47 @@
 {% extends 'base.html' %}
+{% load comment_tags %}
+{% load ratings %}
 {% block title %}{{ article.title }}{% endblock %}
 {% block main %}
     <!-- Page Header-->
-<header class="masthead" style="background-image: url('{{ article.thumbnail.url }}')">
-    <div class="container position-relative px-4 px-lg-5">
-        <div class="row gx-4 gx-lg-5 justify-content-center">
-            <div class="col-md-10 col-lg-8 col-xl-7">
-                <div class="site-heading">
-                    <h1 class="fs-1">{{ article.title }}</h1>
-                    {% if article.is_special %}
-                        <span class="badge bg-danger" style="font-size: 14px;">ویژه</span>
-                    {% endif %}
-                    <time>{{ article.jpublish }}</time>
-                </div>
-            </div>
-        </div>
-    </div>
-</header>
-    <article class="mb-4">
-            <div class="container px-4 px-lg-5">
-                <div class="row gx-4 gx-lg-5 justify-content-center">
-                    <div class="col-md-10 col-lg-8 col-xl-7 text-justify">
+    <header class="masthead" style="background-image: url('{{ article.thumbnail.url }}')">
+        <div class="container position-relative px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-md-10 col-lg-8 col-xl-7">
+                    <div class="site-heading">
+                        <h1 class="fs-1">{{ article.title }}</h1>
                         {% if article.is_special %}
-                            {% if user.is_authenticated and user.is_special_user or user == article.author or user.is_superuser %}
-                                {{ article.description|safe }}
-                            {% else %}
-                                {{ article.description|striptags|truncatewords:30 }}
-                                <p class="alert alert-warning">این مقاله ویژه است و برای مشاهده آن باید
-                                    <a class="alert alert-link" href="#">اشتراک ویژه</a>
-                                    تهیه نمایید.
-                                </p>
-                            {% endif %}
-                        {% else %}
-                            {{ article.description|safe }}
+                            <span class="badge bg-danger" style="font-size: 14px;">ویژه</span>
                         {% endif %}
+                        <time>{{ article.jpublish }}</time><br>
+                        {% ratings article %}
                     </div>
                 </div>
             </div>
-        </article>
+        </div>
+    </header>
+    <article class="mb-4">
+        <div class="container px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-md-10 col-lg-8 col-xl-7 text-justify">
+                    {% if article.is_special %}
+                        {% if user.is_authenticated and user.is_special_user or user == article.author or user.is_superuser %}
+                            {{ article.description|safe }}
+                            {% render_comments article request %}
+                            {% include_bootstrap %}
+                        {% else %}
+                            <p class="alert alert-warning">این مقاله ویژه است و برای مشاهده آن باید
+                                <a class="alert alert-link" href="#">اشتراک ویژه</a>
+                                تهیه نمایید.
+                            </p>
+                        {% endif %}
+                    {% else %}
+                        {{ article.description|safe }}
+                        {% render_comments article request %}
+                        {% include_bootstrap %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </article>
 {% endblock %}
