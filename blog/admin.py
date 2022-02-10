@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from blog.models import Article, Category
+from blog.models import Article, Category, IPAddress
 
 
 @admin.register(Article)
@@ -45,3 +45,7 @@ class CategoryAdmin(admin.ModelAdmin):
     def set_status_false(self, request, queryset):
         updated = queryset.update(status=False)
         self.message_user(request, f'{updated} دسته بندی غیر قابل نمایش شد.')
+
+@admin.register(IPAddress)
+class IPAddressAdmin(admin.ModelAdmin):
+    pass

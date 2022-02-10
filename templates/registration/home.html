@@ -1,79 +1,126 @@
 {% extends 'registration/base.html' %}
+{% load base_tags %}
 {% block title-meta %}{% block title %}لیست مقالات{% endblock %}{% endblock %}
 {% block main %}
     {% if articles.exists %}
         <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-body table-responsive p-0">
-                    <table class="table table-hover">
-                        <thead>
-                        <tr>
-                            <th>عنوان مقاله</th>
-                            <th>تصویر</th>
-                            <th>دسته بندی</th>
-                            <th>نویسنده</th>
-                            <th>خلاصه مقاله</th>
-                            <th>زمان انتشار</th>
-                            <th>مقاله ویژه</th>
-                            <th>وضعیت</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for article in articles %}
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body table-responsive p-0">
+                        <table class="table table-hover">
+                            <thead>
                             <tr>
-                                <td>
-                                    {% if article.status in 'bd'|make_list or user.is_superuser %}
-                                        <a href="{% url 'accounts:article-update' article.pk %}">{{ article.title }}</a>
-                                    {% else %}
-                                        {{ article.title }}
-                                    {% endif %}
-                                </td>
-                                <td><img src="{{ article.thumbnail.url }}" width="120px"/></td>
-                                <td>{{ article.category_to_str }}</td>
-                                <td>{{ article.author.get_full_name }}</td>
-                                <td>{{ article.description|striptags|truncatewords:30 }}</td>
-                                <td>{{ article.jpublish }}</td>
-                                <td>
-                                    {% if article.is_special %}
-                                        <i class="fa fa-check-circle text-green"></i>
-                                    {% else %}
-                                        <i class="fa fa-minus-circle text-red"></i>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if article.status == 'p' %}
-                                        <span class="badge badge-success">منتشر شده</span>
-                                        <a class="badge badge-primary"
-                                           href="{% url 'blog:detail' article.slug %}">نمایش</a>
-                                    {% elif article.status == 'i' %}
-                                        <span class="badge badge-info">در حال بررسی</span>
-                                        {% if user.is_superuser %}
-                                            <a class="badge badge-secondary" href="{% url 'blog:preview' article.pk %}">پیش نمایش</a>
-                                        {% endif %}
-                                    {% else %}
-                                        {% if article.status == 'd' %}
-                                            <span class="badge badge-danger">پیش نویس</span>
-                                        {% else %}
-                                            <span class="badge badge-warning">برگشت داده شده</span>
-                                            <a class="badge badge-secondary" href="{% url 'blog:preview' article.pk %}">پیش نمایش</a>
-                                        {% endif %}
-                                    {% endif %}
-                                    {% if user.is_superuser %}
-                                        <a class="badge text-danger"
-                                           href="{% url 'accounts:article-delete' article.pk %}">حذف</a>
-                                    {% endif %}
-                                </td>
+                                <th>عنوان مقاله</th>
+                                <th>تصویر</th>
+                                <th>دسته بندی</th>
+                                <th>نویسنده</th>
+                                <th>خلاصه مقاله</th>
+                                <th>زمان انتشار</th>
+                                <th>مقاله ویژه</th>
+                                <th>وضعیت</th>
                             </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                            {% for article in articles %}
+                                <tr>
+                                    <td>
+                                        {% if article.status in 'bd'|make_list or user.is_superuser %}
+                                            <a href="{% url 'accounts:article-update' article.pk %}">{{ article.title }}</a>
+                                        {% else %}
+                                            {{ article.title }}
+                                        {% endif %}
+                                    </td>
+                                    <td><img src="{{ article.thumbnail.url }}" width="120px"/></td>
+                                    <td>{{ article.category_to_str }}</td>
+                                    <td>{{ article.author.get_full_name }}</td>
+                                    <td>{{ article.description|striptags|truncatewords:30 }}</td>
+                                    <td>{{ article.jpublish }}</td>
+                                    <td>
+                                        {% if article.is_special %}
+                                            <i class="fa fa-check-circle text-green"></i>
+                                        {% else %}
+                                            <i class="fa fa-minus-circle text-red"></i>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if article.status == 'p' %}
+                                            <span class="badge badge-success">منتشر شده</span>
+                                            <a class="badge badge-primary"
+                                               href="{% url 'blog:detail' article.slug %}">نمایش</a>
+                                        {% elif article.status == 'i' %}
+                                            <span class="badge badge-info">در حال بررسی</span>
+                                            {% if user.is_superuser %}
+                                                <a class="badge badge-secondary"
+                                                   href="{% url 'blog:preview' article.pk %}">پیش نمایش</a>
+                                            {% endif %}
+                                        {% else %}
+                                            {% if article.status == 'd' %}
+                                                <span class="badge badge-danger">پیش نویس</span>
+                                            {% else %}
+                                                <span class="badge badge-warning">برگشت داده شده</span>
+                                                <a class="badge badge-secondary"
+                                                   href="{% url 'blog:preview' article.pk %}">پیش نمایش</a>
+                                            {% endif %}
+                                        {% endif %}
+                                        {% if user.is_superuser %}
+                                            <a class="badge text-danger"
+                                               href="{% url 'accounts:article-delete' article.pk %}">حذف</a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
                 </div>
-                <!-- /.card-body -->
+                <!-- /.card -->
             </div>
-            <!-- /.card -->
         </div>
-    </div>
+        {% if is_paginated %}
+            <div class="d-flex justify-content-center mb-4">
+                <ul class="pagination" style="direction: ltr !important;">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link"
+                               href="{% url 'accounts:home' %}?page={{ page_obj.previous_page_number }}">قبلی</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <a class="page-link">قبلی</a>
+                        </li>
+                    {% endif %}
+                    {% page_range paginator page_obj.number as pages %}
+                    {% for i in pages %}
+                        {% if page_obj.number == i %}
+                            <li class="page-item active" aria-current="page">
+                                <a class="page-link" href="{% url 'accounts:home' %}?page={{ i }}">{{ i }}</a>
+                            </li>
+                        {% else %}
+                            {% if i == paginator.ELLIPSIS %}
+                                <li class="page-item">
+                                    <span class="page-link">{{ paginator.ELLIPSIS }}</span>
+                                </li>
+                            {% else %}
+                                <li class="page-item">
+                                    <a class="page-link" href="{% url 'accounts:home' %}?page={{ i }}">{{ i }}</a>
+                                </li>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link"
+                               href="{% url 'accounts:home' %}?page={{ page_obj.next_page_number }}">بعدی</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#">بعدی</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        {% endif %}
     {% else %}
         <h4>محتوایی برای نمایش وجود ندارد.</h4>
     {% endif %}

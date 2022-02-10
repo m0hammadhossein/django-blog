@@ -12,7 +12,8 @@ class Home(ListView):
     paginate_by = 10
     ordering = ('-publish',)
     context_object_name = 'articles'
-    queryset =  Article.objects.published()
+    queryset = Article.objects.published()
+
 
 
 class ArticleView(DetailView):
@@ -20,7 +21,13 @@ class ArticleView(DetailView):
     context_object_name = 'article'
 
     def get_object(self, queryset=None):
-        return get_object_or_404(Article.objects.published(), slug=self.kwargs['slug'])
+        article = get_object_or_404(Article.objects.published(), slug=self.kwargs['slug'])
+        try:
+            article.hits.add(self.request.user.ip_address)
+        except:
+            pass
+        return article
+
 
 class ArticlePreview(AuthorAccessMixin, DetailView):
     model = Article

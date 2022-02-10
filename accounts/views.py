@@ -21,6 +21,7 @@ User = get_user_model()
 
 class ArticleList(AuthorsAccessMixin, ListView):
     context_object_name = 'articles'
+    paginate_by = 10
     template_name = 'registration/home.html'
 
     def get_queryset(self):

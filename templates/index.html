@@ -18,6 +18,7 @@
     <div class="container px-4 px-lg-5">
         <div class="row gx-4 gx-lg-5 justify-content-center">
             <div class="col-md-10 col-lg-8 col-xl-7">
+                {% popular_articles %}
                 <!-- Post preview-->
                 {% for article in articles %}
                     <div class="post-preview">
@@ -40,6 +41,7 @@
                                 <a href="{% url 'blog:category' cat.slug %}">#{{ cat.title }}</a>
                             {% endfor %}
                         </div>
+                        <div>بازدید ها : {{ article.hits.count }}</div>
                     </div>
                     <hr class="my-4"/>
                 {% endfor %}
