@@ -8,4 +8,5 @@ urlpatterns = [
     path('preview/<int:pk>/', views.ArticlePreview.as_view(), name='preview'),
     path('category/<str:slug>/', views.CategoryView.as_view(), name='category'),
     path('author/<slug:username>/', views.AuthorView.as_view(), name='author'),
+    path('search/', views.SearchView.as_view(), name='search'),
 ]
