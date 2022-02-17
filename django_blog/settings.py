@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'django_filters',
     'blog.apps.BlogConfig',
     'accounts.apps.AccountsConfig',
     'widget_tweaks',
@@ -58,6 +60,14 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'blog.middleware.SaveIPAdderssMiddleware',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'django_blog.pagination.MyPagination',
+    'DEFAULT_FILTER_BACKENDS': ('rest_framework.filters.SearchFilter',
+                                'rest_framework.filters.OrderingFilter',
+                                'django_filters.rest_framework.DjangoFilterBackend'),
+    'PAGE_SIZE': 20
+}
 
 ROOT_URLCONF = 'django_blog.urls'
 

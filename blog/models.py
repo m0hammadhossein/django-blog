@@ -90,7 +90,7 @@ class Article(models.Model):
         return self.category.filter(status=True)
 
     def category_to_str(self):
-        return '/'.join([i.title for i in self.category_publish()])
+        return ','.join([i.title for i in self.category_publish()])
 
     category_to_str.short_description = 'دسته بندی'
 

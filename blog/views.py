@@ -1,9 +1,11 @@
 from django.contrib.auth import get_user_model
 from django.db.models import Q
-
+from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
+from rest_framework.viewsets import GenericViewSet
 from accounts.mixins import AuthorAccessMixin
 from django.shortcuts import get_object_or_404
 from django.views.generic import DetailView, ListView
+from blog.api.serializers import ArticleSerializer
 from blog.models import Article, Category
 
 User = get_user_model()
@@ -78,3 +80,19 @@ class SearchView(ListView):
         context = super().get_context_data(object_list=object_list, **kwargs)
         context['search'] = self.request.GET.get('q')
         return context
+
+
+class ArticleAPIView(ListModelMixin, RetrieveModelMixin, GenericViewSet):
+    serializer_class = ArticleSerializer
+    search_fields = ('title', 'description')
+    ordering_fields = ('publish',)
+
+    def check_permissions(self, request):
+        super().check_permissions(request)
+        if request.user.is_authenticated and self.request.user.is_special_user():
+            self.filterset_fields = ('is_special',)
+
+    def get_queryset(self):
+        if self.request.user.is_authenticated and self.request.user.is_special_user():
+            return Article.objects.filter(status='p')
+        return Article.objects.filter(status='p', is_special=False)
