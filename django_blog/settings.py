@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'knox',
     'django_filters',
     'blog.apps.BlogConfig',
     'accounts.apps.AccountsConfig',
@@ -62,6 +63,7 @@ MIDDLEWARE = [
 ]
 
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication',),
     'DEFAULT_PAGINATION_CLASS': 'django_blog.pagination.MyPagination',
     'DEFAULT_FILTER_BACKENDS': ('rest_framework.filters.SearchFilter',
                                 'rest_framework.filters.OrderingFilter',
