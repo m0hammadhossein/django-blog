@@ -22,7 +22,7 @@ Enter your email and secret key in <b>.env</b> file
 </p>
 
 ```
-pip install -r requirements
+pip install -r requirements.txt
 python manage.py makemigrations
 python manage.py migrate
 ```
