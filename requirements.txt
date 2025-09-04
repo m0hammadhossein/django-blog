@@ -1,0 +1,16 @@
+asgiref==3.9.1
+black==25.1.0
+click==8.2.1
+Django==5.2.5
+django-admin-persian-fonts==0.2
+django-appconf==1.1.0
+django-imagekit @ https://github.com/matthewwithanm/django-imagekit/archive/refs/heads/develop.zip#sha256=a817ea02b311376af7416828c2e150416c1cfd8603bd61088601f2e52d14d769
+djangorestframework==3.16.1
+mypy_extensions==1.1.0
+packaging==25.0
+pathspec==0.12.1
+pilkit==3.0
+pillow==11.3.0
+platformdirs==4.3.8
+six==1.17.0
+sqlparse==0.5.3
