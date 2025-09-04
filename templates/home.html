@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>وبلاگ من</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'iranian': ['IRANSans', 'Tahoma', 'Arial', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
+    <style>
+        @import url('https://cdn.jsdelivr.net/gh/rastikerdar/sahel-font@v3.4.0/dist/font-face.css');
+
+        body {
+            font-family: 'Vazirmatn', 'Sahel', 'Tahoma', sans-serif;
+        }
+
+        .post-card {
+            background: linear-gradient(145deg, #1f2937, #111827);
+            border: 1px solid rgba(75, 85, 99, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .post-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+
+        .post-image {
+            transition: all 0.3s ease;
+        }
+
+        .post-card:hover .post-image {
+            transform: scale(1.05);
+        }
+
+        .loading-spinner {
+            border: 4px solid #374151;
+            border-top: 4px solid #3b82f6;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-bg {
+            background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+            border-bottom: 1px solid rgba(75, 85, 99, 0.3);
+        }
+
+        .category-badge {
+            background: linear-gradient(135deg, #059669, #047857);
+            box-shadow: 0 4px 14px 0 rgba(5, 150, 105, 0.3);
+        }
+
+        .slide {
+            transition: all 1s ease-in-out;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .indicator.active {
+            background-color: white !important;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <!-- Header -->
+    <header class="header-bg shadow-2xl">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <div class="text-3xl ml-4">📝</div>
+                    <h1 class="text-3xl font-bold gradient-text">وبلاگ من</h1>
+                </div>
+                <nav class="hidden md:flex space-x-8 space-x-reverse">
+                    <a href="#" class="text-gray-300 hover:text-white transition-colors">خانه</a>
+                    <a href="#" class="text-gray-300 hover:text-white transition-colors">مقالات</a>
+                    <a href="#" class="text-gray-300 hover:text-white transition-colors">درباره ما</a>
+                    <a href="#" class="text-gray-300 hover:text-white transition-colors">تماس</a>
+                </nav>
+                <button id="mobile-menu-btn" class="md:hidden text-white relative z-50 p-2 rounded-lg hover:bg-gray-700 transition-all duration-300">
+                    <svg id="hamburger-icon" class="w-6 h-6 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                    <svg id="close-icon" class="w-6 h-6 absolute top-2 left-2 opacity-0 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Overlay -->
+        <div id="mobile-menu-overlay" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-40 opacity-0 invisible transition-all duration-300 md:hidden"></div>
+
+        <!-- Mobile Menu Drawer -->
+        <div id="mobile-menu" class="fixed top-0 right-0 h-full w-80 bg-gradient-to-b from-gray-800 to-gray-900 shadow-2xl transform translate-x-full transition-all duration-300 ease-in-out z-50 md:hidden">
+            <div class="flex flex-col h-full">
+                <!-- Menu Header -->
+                <div class="flex items-center justify-between p-6 border-b border-gray-700">
+                    <div class="flex items-center">
+                        <div class="text-2xl ml-3">📝</div>
+                        <h2 class="text-xl font-bold gradient-text">منوی اصلی</h2>
+                    </div>
+                </div>
+
+                <!-- Menu Items -->
+                <nav class="flex-1 px-6 py-8">
+                    <ul class="space-y-6">
+                        <li>
+                            <a href="#" class="flex items-center text-white hover:text-blue-400 transition-all duration-300 text-lg font-medium group">
+                                <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center ml-4 group-hover:bg-blue-500 transition-colors">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
+                                    </svg>
+                                </div>
+                                خانه
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="flex items-center text-white hover:text-blue-400 transition-all duration-300 text-lg font-medium group">
+                                <div class="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center ml-4 group-hover:bg-green-500 transition-colors">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M2 5a2 2 0 012-2h8a2 2 0 012 2v10a2 2 0 002 2H4a2 2 0 01-2-2V5zm3 1h6v4H5V6zm6 6H5v2h6v-2z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                مقالات
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="flex items-center text-white hover:text-blue-400 transition-all duration-300 text-lg font-medium group">
+                                <div class="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center ml-4 group-hover:bg-purple-500 transition-colors">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                درباره ما
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="flex items-center text-white hover:text-blue-400 transition-all duration-300 text-lg font-medium group">
+                                <div class="w-8 h-8 bg-orange-600 rounded-lg flex items-center justify-center ml-4 group-hover:bg-orange-500 transition-colors">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
+                                        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
+                                    </svg>
+                                </div>
+                                تماس با ما
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+
+                <!-- Menu Footer -->
+                <div class="p-6 border-t border-gray-700">
+                    <div class="text-center text-gray-400 text-sm">
+                        <p>وبلاگ من © ۲۰۲۴</p>
+                        <p class="mt-1">ساخته شده با ❤️</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Slider Banner -->
+    <section class="relative overflow-hidden bg-gradient-to-br from-gray-800 to-gray-900">
+        <div class="slider-container relative h-96 md:h-[500px]">
+            <!-- Slide 1 -->
+            <div class="slide active absolute inset-0 transition-all duration-1000 ease-in-out">
+                <div class="absolute inset-0 bg-gradient-to-r from-blue-900/80 to-purple-900/80"></div>
+                <img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
+                     alt="تکنولوژی و نوآوری" class="w-full h-full object-cover">
+                <div class="absolute inset-0 flex items-center justify-center text-center">
+                    <div class="max-w-4xl px-6">
+                        <h2 class="text-4xl md:text-6xl font-bold text-white mb-4 leading-tight">
+                            دنیای تکنولوژی
+                        </h2>
+                        <p class="text-xl md:text-2xl text-gray-200 mb-8">
+                            آخرین اخبار و مقالات تکنولوژی را با ما دنبال کنید
+                        </p>
+                        <button class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all duration-300 transform hover:scale-105">
+                            مطالعه مقالات
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 2 -->
+            <div class="slide absolute inset-0 transition-all duration-1000 ease-in-out opacity-0 translate-x-full">
+                <div class="absolute inset-0 bg-gradient-to-r from-green-900/80 to-teal-900/80"></div>
+                <img src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-4.0.3&auto=format&fit=crop&w=2072&q=80"
+                     alt="برنامه‌نویسی و توسعه" class="w-full h-full object-cover">
+                <div class="absolute inset-0 flex items-center justify-center text-center">
+                    <div class="max-w-4xl px-6">
+                        <h2 class="text-4xl md:text-6xl font-bold text-white mb-4 leading-tight">
+                            برنامه‌نویسی
+                        </h2>
+                        <p class="text-xl md:text-2xl text-gray-200 mb-8">
+                            آموزش‌های کاربردی و تکنیک‌های پیشرفته برنامه‌نویسی
+                        </p>
+                        <button class="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all duration-300 transform hover:scale-105">
+                            شروع یادگیری
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 3 -->
+            <div class="slide absolute inset-0 transition-all duration-1000 ease-in-out opacity-0 translate-x-full">
+                <div class="absolute inset-0 bg-gradient-to-r from-purple-900/80 to-pink-900/80"></div>
+                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
+                     alt="تحلیل داده و هوش مصنوعی" class="w-full h-full object-cover">
+                <div class="absolute inset-0 flex items-center justify-center text-center">
+                    <div class="max-w-4xl px-6">
+                        <h2 class="text-4xl md:text-6xl font-bold text-white mb-4 leading-tight">
+                            هوش مصنوعی
+                        </h2>
+                        <p class="text-xl md:text-2xl text-gray-200 mb-8">
+                            کاوش در دنیای هوش مصنوعی و تحلیل داده‌ها
+                        </p>
+                        <button class="bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all duration-300 transform hover:scale-105">
+                            کشف کنید
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Arrows -->
+            <button onclick="previousSlide()" class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-all duration-300 z-10">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+            </button>
+            <button onclick="nextSlide()" class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-all duration-300 z-10">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+            </button>
+
+            <!-- Slide Indicators -->
+            <div class="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-2 space-x-reverse z-10">
+                <button onclick="goToSlide(0)" class="indicator active w-3 h-3 bg-white rounded-full transition-all duration-300"></button>
+                <button onclick="goToSlide(1)" class="indicator w-3 h-3 bg-white/50 rounded-full transition-all duration-300"></button>
+                <button onclick="goToSlide(2)" class="indicator w-3 h-3 bg-white/50 rounded-full transition-all duration-300"></button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Loading State -->
+        <div id="loading" class="flex justify-center items-center py-20">
+            <div class="loading-spinner"></div>
+            <span class="mr-3 text-gray-400">در حال بارگذاری پست‌ها...</span>
+        </div>
+
+        <!-- Error State -->
+        <div id="error" class="hidden bg-red-900 border border-red-700 text-red-300 px-6 py-4 rounded-lg text-center">
+            <h3 class="font-bold mb-2">خطا در بارگذاری</h3>
+            <p id="error-message">متأسفانه نتوانستیم پست‌ها را بارگذاری کنیم. لطفاً دوباره تلاش کنید.</p>
+            <button onclick="loadPosts()" class="mt-4 bg-red-700 hover:bg-red-600 px-4 py-2 rounded transition-colors">
+                تلاش مجدد
+            </button>
+        </div>
+
+        <!-- Posts Grid -->
+        <div id="posts-container" class="hidden">
+            <div class="flex items-center justify-between mb-8">
+                <h2 class="text-3xl font-bold gradient-text">آخرین مقالات</h2>
+                <div class="flex items-center space-x-4 space-x-reverse">
+                    <select id="category-filter" class="bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded-lg">
+                        <option value="">همه دسته‌بندی‌ها</option>
+                    </select>
+                    <button onclick="loadPosts()" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div id="posts-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Posts will be loaded here -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 border-t border-gray-700 py-8 mt-16">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-gray-400">© ۲۰۲۴ وبلاگ من. تمامی حقوق محفوظ است.</p>
+        </div>
+    </footer>
+
+    <script>
+        let allPosts = [];
+        let categories = [];
+        let currentCategoryId = null;
+
+        // XSS Protection - Sanitize HTML content
+        function sanitizeHTML(str) {
+            if (!str) return '';
+
+            // Create a temporary div to decode HTML entities and strip tags
+            const temp = document.createElement('div');
+            temp.innerHTML = str;
+
+            // Get text content (this removes all HTML tags)
+            let sanitized = temp.textContent || temp.innerText || '';
+
+            // Allow only safe formatting by replacing common patterns
+            sanitized = sanitized
+                // Convert line breaks
+                .replace(/\n/g, '<br>')
+                // Convert **bold** to <strong>
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                // Convert *italic* to <em>
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                // Convert `code` to <code>
+                .replace(/`(.*?)`/g, '<code class="bg-gray-800 px-2 py-1 rounded text-sm">$1</code>');
+
+            return sanitized;
+        }
+
+        // Escape HTML to prevent XSS
+        function escapeHTML(str) {
+            if (!str) return '';
+
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        // Slider functionality
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const indicators = document.querySelectorAll('.indicator');
+        const totalSlides = slides.length;
+
+        function showSlide(index) {
+            // Hide all slides
+            slides.forEach((slide, i) => {
+                slide.classList.remove('active');
+                slide.style.opacity = '0';
+                slide.style.transform = i < index ? 'translateX(-100%)' : i > index ? 'translateX(100%)' : 'translateX(0)';
+            });
+
+            // Show current slide
+            slides[index].classList.add('active');
+            slides[index].style.opacity = '1';
+            slides[index].style.transform = 'translateX(0)';
+
+            // Update indicators
+            indicators.forEach((indicator, i) => {
+                indicator.classList.toggle('active', i === index);
+                indicator.style.backgroundColor = i === index ? 'white' : 'rgba(255, 255, 255, 0.5)';
+            });
+
+            currentSlide = index;
+        }
+
+        function nextSlide() {
+            const next = (currentSlide + 1) % totalSlides;
+            showSlide(next);
+        }
+
+        function previousSlide() {
+            const prev = (currentSlide - 1 + totalSlides) % totalSlides;
+            showSlide(prev);
+        }
+
+        function goToSlide(index) {
+            showSlide(index);
+        }
+
+        // Auto-play slider
+        setInterval(nextSlide, 5000);
+
+        // Get URL parameters
+        function getUrlParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        // Update URL with category parameter
+        function updateUrl(categoryId) {
+            const url = new URL(window.location);
+            if (categoryId) {
+                url.searchParams.set('category', categoryId);
+            } else {
+                url.searchParams.delete('category');
+            }
+            window.history.pushState({}, '', url);
+        }
+
+        // Convert time to Persian relative time
+        function getRelativeTimePersian(dateString) {
+            const now = new Date();
+            const publishedDate = new Date(dateString);
+            const diffInSeconds = Math.floor((now - publishedDate) / 1000);
+
+            if (diffInSeconds < 60) {
+                return `${diffInSeconds} ثانیه پیش`;
+            }
+
+            const diffInMinutes = Math.floor(diffInSeconds / 60);
+            if (diffInMinutes < 60) {
+                return `${diffInMinutes} دقیقه پیش`;
+            }
+
+            const diffInHours = Math.floor(diffInMinutes / 60);
+            if (diffInHours < 24) {
+                return `${diffInHours} ساعت پیش`;
+            }
+
+            const diffInDays = Math.floor(diffInHours / 24);
+            if (diffInDays < 30) {
+                return `${diffInDays} روز پیش`;
+            }
+
+            const diffInMonths = Math.floor(diffInDays / 30);
+            if (diffInMonths < 12) {
+                return `${diffInMonths} ماه پیش`;
+            }
+
+            const diffInYears = Math.floor(diffInMonths / 12);
+            return `${diffInYears} سال پیش`;
+        }
+
+        // Load categories from API
+        async function loadCategories() {
+            try {
+                const response = await fetch('{% url "category_api" %}', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    categories = Array.isArray(data) ? data : (data.results || []);
+                    updateCategoriesDropdown();
+                }
+            } catch (error) {
+                console.error('Error loading categories:', error);
+            }
+        }
+
+        // Load posts from API
+        async function loadPosts() {
+            try {
+                showLoading();
+
+                console.log('Loading posts...');
+
+                // Get category parameter from URL
+                const categoryParam = getUrlParameter('category');
+                let apiUrl = '{% url "posts_api" %}';
+
+                if (categoryParam) {
+                    apiUrl += `?category=${categoryParam}`;
+                    currentCategoryId = categoryParam;
+                } else {
+                    currentCategoryId = null;
+                }
+
+                const response = await fetch(apiUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                console.log('Response status:', response.status);
+
+                if (!response.ok) {
+                    throw new Error(`خطا در بارگذاری: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log('API Response:', data);
+
+                // Handle different API response formats
+                let posts = [];
+                if (Array.isArray(data)) {
+                    posts = data;
+                } else if (data.results && Array.isArray(data.results)) {
+                    posts = data.results;
+                } else if (data.posts && Array.isArray(data.posts)) {
+                    posts = data.posts;
+                } else if (data.data && Array.isArray(data.data)) {
+                    posts = data.data;
+                } else {
+                    console.error('Unexpected API response format:', data);
+                    throw new Error('فرمت داده‌های دریافتی نامعتبر است');
+                }
+
+                console.log('Processed posts:', posts);
+
+                allPosts = posts;
+                displayPosts(posts);
+                showPosts();
+
+                // Update category dropdown selection
+                updateCategorySelection();
+
+            } catch (error) {
+                console.error('Error loading posts:', error);
+                showError(error.message);
+            }
+        }
+
+        // Update categories dropdown
+        function updateCategoriesDropdown() {
+            const categoryFilter = document.getElementById('category-filter');
+            categoryFilter.innerHTML = '<option value="">همه دسته‌بندی‌ها</option>';
+
+            categories.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category.id;
+                option.textContent = escapeHTML(category.name);
+                categoryFilter.appendChild(option);
+            });
+        }
+
+        // Update category selection based on URL
+        function updateCategorySelection() {
+            const categoryFilter = document.getElementById('category-filter');
+            if (currentCategoryId) {
+                categoryFilter.value = currentCategoryId;
+            } else {
+                categoryFilter.value = '';
+            }
+        }
+
+        // Display posts in grid
+        function displayPosts(posts) {
+            const postsGrid = document.getElementById('posts-grid');
+
+            if (posts.length === 0) {
+                postsGrid.innerHTML = `
+                    <div class="col-span-full text-center py-12">
+                        <div class="text-6xl mb-4">📝</div>
+                        <h3 class="text-xl font-semibold text-gray-400 mb-2">هنوز پستی منتشر نشده</h3>
+                        <p class="text-gray-500">به زودی مقالات جدید منتشر خواهد شد.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            postsGrid.innerHTML = posts.map(post => `
+                <article class="post-card rounded-xl overflow-hidden shadow-xl">
+                    <div class="aspect-video bg-gradient-to-br from-gray-700 to-gray-800 overflow-hidden">
+                        <img src="${escapeHTML(post.featured_image) || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDQwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjMzc0MTUxIi8+CjxwYXRoIGQ9Ik0xNzUgNzVIMjI1VjEyNUgxNzVWNzVaIiBmaWxsPSIjNkI3Mjg5Ii8+CjxwYXRoIGQ9Ik0xOTAgMTAwTDIxMCA4MEgyMjBMMTkwIDEzMEgxOTBWMTAwWiIgZmlsbD0iIzlDQTRBRiIvPgo8L3N2Zz4='}"
+                             alt="${escapeHTML(post.title)}"
+                             class="post-image w-full h-full object-cover"
+                             onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDQwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjMzc0MTUxIi8+CjxwYXRoIGQ9Ik0xNzUgNzVIMjI1VjEyNUgxNzVWNzVaIiBmaWxsPSIjNkI3Mjg5Ii8+CjxwYXRoIGQ9Ik0xOTAgMTAwTDIxMCA4MEgyMjBMMTkwIDEzMEgxOTBWMTAwWiIgZmlsbD0iIzlDQTRBRiIvPgo8L3N2Zz4='; this.alt='تصویر پیش‌فرض';">
+                    </div>
+                    <div class="p-6">
+                        ${post.category ? `
+                            <div class="mb-3">
+                                <span class="category-badge px-3 py-1 text-xs font-semibold text-white rounded-full">
+                                    📂 ${escapeHTML(post.category)}
+                                </span>
+                            </div>
+                        ` : `
+                            <div class="mb-3">
+                                <span class="bg-gray-600 px-3 py-1 text-xs font-semibold text-white rounded-full">
+                                    📝 عمومی
+                                </span>
+                            </div>
+                        `}
+
+                        <h3 class="text-xl font-bold mb-3 text-white leading-tight hover:text-blue-400 transition-colors">
+                            <a href="/post/${escapeHTML(post.slug)}/" class="block">${escapeHTML(post.title)}</a>
+                        </h3>
+
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center text-sm text-gray-400">
+                                <svg class="w-4 h-4 ml-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                                </svg>
+                                <span class="ml-4">${escapeHTML(post.author)}</span>
+                                <svg class="w-4 h-4 ml-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                                </svg>
+                                <span class="text-blue-400">${post.published_at ? getRelativeTimePersian(post.published_at) : 'تاریخ نامشخص'}</span>
+                            </div>
+
+                            <div class="flex items-center space-x-4 space-x-reverse text-sm">
+                                <div class="flex items-center text-red-400">
+                                    <svg class="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    <span>${post.likes || 0}</span>
+                                </div>
+                                <div class="flex items-center text-blue-400">
+                                    <svg class="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    <span>${post.comments || 0}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end">
+
+                            <a href="/post/${escapeHTML(post.slug)}/" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 transform hover:scale-105">
+                                ادامه مطلب
+                            </a>
+                        </div>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        // Filter posts by category
+        function filterPosts() {
+            const selectedCategoryId = document.getElementById('category-filter').value;
+
+            // Update URL and reload posts
+            updateUrl(selectedCategoryId || null);
+            loadPosts();
+        }
+
+        // UI State Management
+        function showLoading() {
+            document.getElementById('loading').classList.remove('hidden');
+            document.getElementById('posts-container').classList.add('hidden');
+            document.getElementById('error').classList.add('hidden');
+        }
+
+        function showPosts() {
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('posts-container').classList.remove('hidden');
+            document.getElementById('error').classList.add('hidden');
+        }
+
+        function showError(message = 'خطا در بارگذاری پست‌ها') {
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('posts-container').classList.add('hidden');
+            document.getElementById('error').classList.remove('hidden');
+            document.getElementById('error-message').textContent = message;
+        }
+
+        // Mobile Menu Functionality
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            const overlay = document.getElementById('mobile-menu-overlay');
+            const hamburgerIcon = document.getElementById('hamburger-icon');
+            const closeIcon = document.getElementById('close-icon');
+
+            const isOpen = !mobileMenu.classList.contains('translate-x-full');
+
+            if (isOpen) {
+                // Close menu
+                mobileMenu.classList.add('translate-x-full');
+                overlay.classList.add('opacity-0', 'invisible');
+                hamburgerIcon.style.opacity = '1';
+                hamburgerIcon.style.transform = 'rotate(0deg)';
+                closeIcon.style.opacity = '0';
+                closeIcon.style.transform = 'rotate(-90deg)';
+                document.body.style.overflow = 'auto';
+            } else {
+                // Open menu
+                mobileMenu.classList.remove('translate-x-full');
+                overlay.classList.remove('opacity-0', 'invisible');
+                hamburgerIcon.style.opacity = '0';
+                hamburgerIcon.style.transform = 'rotate(90deg)';
+                closeIcon.style.opacity = '1';
+                closeIcon.style.transform = 'rotate(0deg)';
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        // Event Listeners
+        document.getElementById('category-filter').addEventListener('change', filterPosts);
+        document.getElementById('mobile-menu-btn').addEventListener('click', toggleMobileMenu);
+        document.getElementById('mobile-menu-overlay').addEventListener('click', toggleMobileMenu);
+
+        // Close menu when clicking on menu items
+        document.querySelectorAll('#mobile-menu nav a').forEach(link => {
+            link.addEventListener('click', toggleMobileMenu);
+        });
+
+        // Load posts when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCategories();
+            loadPosts();
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'979f129132bf790a',t:'MTc1NzAwNTUzNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
