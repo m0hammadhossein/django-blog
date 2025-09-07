@@ -47,7 +47,6 @@ class PostLike(APIView):
 class PostComment(ListModelMixin, CreateModelMixin, GenericAPIView):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     serializer_class = CommentSerializer
-    pagination_class = StandardResultsSetPagination
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
