@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from blog.models import Post, Category
+from blog.models import Post, Category, Comment
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -33,3 +33,12 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = '__all__'
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    author = serializers.SlugRelatedField(slug_field='username', read_only=True)
+
+    class Meta:
+        model = Comment
+        fields = ('author', 'created_at', 'content')
+        read_only_fields = ('author', 'created_at')
