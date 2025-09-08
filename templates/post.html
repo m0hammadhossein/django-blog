@@ -122,6 +122,11 @@
             from { opacity: 0; }
             to { opacity: 1; }
         }
+
+        .login-prompt {
+            background: linear-gradient(135deg, #374151 0%, #1f2937 100%);
+            border: 1px solid rgba(75, 85, 99, 0.3);
+        }
     </style>
 </head>
 <body class="bg-gray-900 text-white min-h-screen">
@@ -241,6 +246,23 @@
                     </form>
                 </div>
 
+                <!-- Login Prompt (for non-authenticated users) -->
+                <div id="login-prompt-section" class="hidden mb-8">
+                    <div class="login-prompt rounded-xl p-6 text-center">
+                        <div class="text-4xl mb-4">🔐</div>
+                        <h3 class="text-xl font-bold mb-2 text-gray-300">برای ارسال نظر وارد شوید</h3>
+                        <p class="text-gray-400 mb-4">برای ثبت نظر و پسندیدن مقالات، ابتدا وارد حساب کاربری خود شوید.</p>
+                        <div class="flex justify-center space-x-4 space-x-reverse">
+                            <a href="{% url 'accounts:login' %}" class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105">
+                                ورود
+                            </a>
+                            <a href="{% url 'accounts:signup' %}" class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300">
+                                ثبت نام
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Comments List -->
                 <div id="comments-container">
                     <!-- Comments will be loaded here -->
@@ -318,8 +340,8 @@
         let isLoadingComments = false;
         let allComments = [];
 
-        // Check if user is authenticated (simulated - in real Django template this would be {{ request.user.is_authenticated|yesno:"true,false" }})
-        const isAuthenticated = true; // This should be replaced with actual Django template variable
+        // Check if user is authenticated using Django template context
+        const isAuthenticated = {{ request.user.is_authenticated|yesno:"true,false" }};
 
         // Escape HTML to prevent XSS
         function escapeHtml(text) {
@@ -492,9 +514,11 @@
             // Setup like section
             setupLikeSection(post);
 
-            // Setup comment form if authenticated
+            // Setup comment form based on authentication
             if (isAuthenticated) {
                 setupCommentForm();
+            } else {
+                setupLoginPrompt();
             }
         }
 
@@ -578,6 +602,11 @@
                 e.preventDefault();
                 await submitComment();
             });
+        }
+
+        // Setup login prompt
+        function setupLoginPrompt() {
+            document.getElementById('login-prompt-section').classList.remove('hidden');
         }
 
         // Submit comment
@@ -764,5 +793,5 @@
             setupInfiniteScroll();
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97c0bc9d37ab698a',t:'MTc1NzM1ODUzMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97c0c34b1047698a',t:'MTc1NzM1ODgwMy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
