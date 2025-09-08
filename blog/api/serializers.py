@@ -37,8 +37,9 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
     author = serializers.SlugRelatedField(slug_field='username', read_only=True)
+    avatar = serializers.CharField(source='author.avatar', read_only=True)
 
     class Meta:
         model = Comment
-        fields = ('author', 'created_at', 'content')
-        read_only_fields = ('author', 'created_at')
+        fields = ('author', 'created_at', 'content', 'avatar')
+        read_only_fields = ('author', 'created_at', 'avatar')

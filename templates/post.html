@@ -3,80 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>جزئیات پست</title>
+    <title id="page-title">در حال بارگذاری...</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        'iranian': ['IRANSans', 'Tahoma', 'Arial', 'sans-serif']
-                    }
-                }
-            }
-        }
-    </script>
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
     <style>
-        @import url('https://cdn.jsdelivr.net/gh/rastikerdar/sahel-font@v3.4.0/dist/font-face.css');
-
         body {
-            font-family: 'Vazirmatn', 'Sahel', 'Tahoma', sans-serif;
-        }
-
-        .post-container {
-            background: linear-gradient(145deg, #1f2937, #111827);
-            border: 1px solid rgba(75, 85, 99, 0.3);
-        }
-
-        .like-btn {
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .like-btn.liked {
-            background: linear-gradient(135deg, #dc2626, #b91c1c);
-            color: white;
-        }
-
-        .like-btn.not-liked {
-            background: linear-gradient(135deg, #374151, #1f2937);
-            color: #9ca3af;
-        }
-
-        .like-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(220, 38, 38, 0.4);
-        }
-
-        .like-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .like-btn:hover::before {
-            left: 100%;
-        }
-
-        .loading-spinner {
-            border: 4px solid #374151;
-            border-top: 4px solid #3b82f6;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            font-family: 'Vazirmatn', 'Tahoma', sans-serif;
         }
 
         .gradient-text {
@@ -86,59 +18,129 @@
             background-clip: text;
         }
 
-        .header-bg {
-            background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
-            border-bottom: 1px solid rgba(75, 85, 99, 0.3);
+        .post-content {
+            line-height: 2;
+            font-size: 1.1rem;
         }
 
-        .back-btn {
-            background: linear-gradient(135deg, #374151, #1f2937);
-            transition: all 0.3s ease;
+        .post-content p {
+            margin-bottom: 1.5rem;
         }
 
-        .back-btn:hover {
-            background: linear-gradient(135deg, #4b5563, #374151);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-        }
-
-        .category-badge {
-            background: linear-gradient(135deg, #059669, #047857);
-            box-shadow: 0 4px 14px 0 rgba(5, 150, 105, 0.3);
-        }
-
-        .post-image {
-            transition: all 0.3s ease;
-        }
-
-        .post-image:hover {
-            transform: scale(1.02);
-        }
-
-        .auth-modal {
-            backdrop-filter: blur(10px);
-            background: rgba(0, 0, 0, 0.8);
-        }
-
-        .modal-content {
-            background: linear-gradient(145deg, #1f2937, #111827);
+        .comment-card {
+            background: linear-gradient(135deg, #374151 0%, #1f2937 100%);
             border: 1px solid rgba(75, 85, 99, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .comment-card:hover {
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        .loading-skeleton {
+            background: linear-gradient(90deg, #374151 25%, #4b5563 50%, #374151 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .like-btn {
+            transition: all 0.3s ease;
+        }
+
+        .like-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .like-btn.liked {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .like-btn.not-liked {
+            background: rgba(75, 85, 99, 0.5);
+            color: #9ca3af;
+        }
+
+        .like-btn.not-liked:hover {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+
+        .comment-form {
+            background: linear-gradient(135deg, #374151 0%, #1f2937 100%);
+            border: 1px solid rgba(75, 85, 99, 0.3);
+        }
+
+        .comment-form:focus-within {
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+
+        .success-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            min-width: 300px;
+            text-align: center;
+            animation: popupSlideIn 0.3s ease-out;
+        }
+
+        .success-popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 999;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes popupSlideIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
     </style>
 </head>
 <body class="bg-gray-900 text-white min-h-screen">
     <!-- Header -->
-    <header class="header-bg shadow-2xl">
+    <header class="bg-gradient-to-r from-gray-800 to-gray-900 shadow-2xl border-b border-gray-700">
         <div class="container mx-auto px-4 py-6">
             <div class="flex items-center justify-between">
-                <button onclick="goBack()" class="back-btn px-4 py-2 rounded-lg font-semibold flex items-center">
-                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                    </svg>
-                    بازگشت
-                </button>
-                <h1 class="text-2xl font-bold gradient-text">جزئیات پست</h1>
-                <div class="w-20"></div> <!-- Spacer for centering -->
+                <div class="flex items-center">
+                    <div class="text-3xl ml-4">💻</div>
+                    <h1 class="text-3xl font-bold gradient-text">
+                        <a href="/" class="hover:opacity-80 transition-opacity">وبلاگ تکنولوژی</a>
+                    </h1>
+                </div>
+                <nav class="hidden md:flex space-x-8 space-x-reverse">
+                    <a href="/" class="text-gray-300 hover:text-white transition-colors">خانه</a>
+                    <a href="/#posts-section" class="text-gray-300 hover:text-white transition-colors">مقالات</a>
+                    <a href="#" class="text-gray-300 hover:text-white transition-colors">درباره ما</a>
+                    <a href="#" class="text-gray-300 hover:text-white transition-colors">تماس</a>
+                </nav>
             </div>
         </div>
     </header>
@@ -146,116 +148,228 @@
     <!-- Main Content -->
     <main class="container mx-auto px-4 py-8">
         <!-- Loading State -->
-        <div id="loading" class="flex justify-center items-center py-20">
-            <div class="loading-spinner"></div>
-            <span class="mr-3 text-gray-400">در حال بارگذاری...</span>
-        </div>
-
-        <!-- Error State -->
-        <div id="error" class="hidden bg-red-900 border border-red-700 text-red-300 px-6 py-4 rounded-lg text-center">
-            <h3 class="font-bold mb-2">خطا در بارگذاری</h3>
-            <p id="error-message">متأسفانه نتوانستیم پست را بارگذاری کنیم. لطفاً دوباره تلاش کنید.</p>
-            <button onclick="loadPost()" class="mt-4 bg-red-700 hover:bg-red-600 px-4 py-2 rounded transition-colors">
-                تلاش مجدد
-            </button>
+        <div id="post-loading" class="max-w-4xl mx-auto">
+            <div class="loading-skeleton h-8 w-3/4 rounded mb-4"></div>
+            <div class="loading-skeleton h-4 w-1/2 rounded mb-6"></div>
+            <div class="loading-skeleton h-64 w-full rounded mb-6"></div>
+            <div class="loading-skeleton h-4 w-full rounded mb-2"></div>
+            <div class="loading-skeleton h-4 w-full rounded mb-2"></div>
+            <div class="loading-skeleton h-4 w-2/3 rounded mb-6"></div>
         </div>
 
         <!-- Post Content -->
-        <div id="post-content" class="hidden">
-            <article class="post-container rounded-xl overflow-hidden shadow-2xl max-w-4xl mx-auto">
-                <!-- Post Image -->
-                <div id="post-image-container" class="aspect-video bg-gradient-to-br from-gray-700 to-gray-800 overflow-hidden">
-                    <img id="post-image" class="post-image w-full h-full object-cover" alt="">
+        <article id="post-content" class="max-w-4xl mx-auto hidden">
+            <!-- Post Header -->
+            <header class="mb-8">
+                <div class="mb-4">
+                    <span id="post-category" class="bg-gradient-to-r from-blue-600 to-purple-600 px-4 py-2 text-sm font-semibold text-white rounded-full"></span>
                 </div>
 
-                <!-- Post Details -->
-                <div class="p-8">
-                    <!-- Category -->
-                    <div id="category-container" class="mb-4 hidden">
-                        <span id="category-badge" class="category-badge px-4 py-2 text-sm font-semibold text-white rounded-full">
-                            📂 <span id="category-text"></span>
-                        </span>
-                    </div>
+                <h1 id="post-title" class="text-4xl md:text-5xl font-bold mb-6 leading-tight"></h1>
 
-                    <!-- Title -->
-                    <h1 id="post-title" class="text-4xl font-bold mb-6 text-white leading-tight"></h1>
-
-                    <!-- Meta Info -->
-                    <div class="flex items-center justify-between mb-8 pb-6 border-b border-gray-700">
-                        <div class="flex items-center space-x-6 space-x-reverse text-sm">
-                            <span class="text-gray-400 flex items-center">
-                                <svg class="w-5 h-5 ml-2" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
-                                </svg>
-                                نویسنده: <span id="post-author" class="font-semibold text-white mr-1"></span>
-                            </span>
-                            <span class="text-gray-400 flex items-center">
-                                <svg class="w-5 h-5 ml-2" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
-                                </svg>
-                                <span id="post-published-time" class="font-semibold text-blue-400 mr-1"></span>
-                            </span>
-                            <span class="text-gray-400 flex items-center">
-                                <svg class="w-5 h-5 ml-2" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                                </svg>
-                                وضعیت: <span id="post-status" class="font-semibold text-green-400 mr-1"></span>
-                            </span>
+                <div class="flex flex-wrap items-center justify-between text-gray-400 mb-6">
+                    <div class="flex items-center space-x-6 space-x-reverse mb-4 md:mb-0">
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 ml-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span id="post-author"></span>
                         </div>
 
-                        <!-- Like Button -->
-                        <button id="like-btn" class="like-btn px-6 py-3 rounded-lg font-semibold flex items-center">
-                            <svg id="heart-icon" class="w-6 h-6 ml-2" viewBox="0 0 20 20">
-                                <path id="heart-path" fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 ml-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
                             </svg>
-                            <span id="like-count">0</span>
-                            <span class="mr-1">پسندیدن</span>
-                        </button>
+                            <span id="post-date"></span>
+                        </div>
+
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                            </svg>
+                            <span id="post-comments-count"></span> نظر
+                        </div>
                     </div>
 
-                    <!-- Post Body -->
-                    <div id="post-body" class="prose prose-lg prose-invert max-w-none">
-                        <!-- Post content will be loaded here -->
+                    <!-- Like Button -->
+                    <div id="like-section">
+                        <!-- Will be populated based on authentication status -->
                     </div>
                 </div>
-            </article>
+            </header>
+
+            <!-- Featured Image -->
+            <div id="post-image-container" class="mb-8 hidden">
+                <img id="post-image" class="w-full h-64 md:h-96 object-cover rounded-xl shadow-2xl" alt="">
+            </div>
+
+            <!-- Post Body -->
+            <div class="prose prose-lg prose-invert max-w-none mb-12">
+                <div id="post-body" class="post-content text-gray-200"></div>
+            </div>
+
+            <!-- Comments Section -->
+            <section class="border-t border-gray-700 pt-8">
+                <h2 class="text-2xl font-bold mb-6 gradient-text">💬 نظرات</h2>
+
+                <!-- Comment Form (for authenticated users) -->
+                <div id="comment-form-section" class="hidden mb-8">
+                    <form id="comment-form" class="comment-form rounded-xl p-6">
+                        <div class="mb-4">
+                            <label for="comment-content" class="block text-sm font-semibold text-gray-300 mb-2">
+                                نظر شما:
+                            </label>
+                            <textarea
+                                id="comment-content"
+                                name="content"
+                                rows="4"
+                                class="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 resize-none"
+                                placeholder="نظر خود را بنویسید..."
+                                required
+                            ></textarea>
+                        </div>
+
+                        <div class="flex justify-end">
+                            <button
+                                type="submit"
+                                class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                                id="submit-comment-btn"
+                            >
+                                ارسال نظر
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Comments List -->
+                <div id="comments-container">
+                    <!-- Comments will be loaded here -->
+                </div>
+
+                <!-- Loading More Comments -->
+                <div id="comments-loading" class="hidden text-center py-8">
+                    <div class="inline-flex items-center">
+                        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span class="text-gray-400">در حال بارگذاری نظرات...</span>
+                    </div>
+                </div>
+
+                <!-- No Comments Message -->
+                <div id="no-comments" class="text-center py-12 hidden">
+                    <div class="text-6xl mb-4">💭</div>
+                    <h3 class="text-xl font-bold mb-2 text-gray-300">هنوز نظری ثبت نشده</h3>
+                    <p class="text-gray-400">اولین نفری باشید که نظر می‌دهد!</p>
+                </div>
+            </section>
+        </article>
+
+        <!-- Error State -->
+        <div id="post-error" class="max-w-4xl mx-auto text-center py-16 hidden">
+            <div class="text-6xl mb-4">😕</div>
+            <h2 class="text-3xl font-bold mb-4 text-red-400">مقاله یافت نشد</h2>
+            <p class="text-gray-400 mb-8">متأسفانه مقاله مورد نظر شما یافت نشد یا حذف شده است.</p>
+            <a href="/" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-colors">
+                بازگشت به صفحه اصلی
+            </a>
         </div>
     </main>
 
-    <!-- Authentication Modal - Only show if user is not authenticated -->
-    {% if not request.user.is_authenticated %}
-    <div id="auth-modal" class="auth-modal fixed inset-0 z-50 flex items-center justify-center hidden">
-        <div class="modal-content rounded-xl p-8 max-w-md mx-4 shadow-2xl">
-            <div class="text-center">
-                <div class="text-6xl mb-4">🔐</div>
-                <h3 class="text-2xl font-bold mb-4 text-white">ورود به حساب کاربری</h3>
-                <p class="text-gray-400 mb-6">برای پسندیدن این پست، ابتدا وارد حساب کاربری خود شوید.</p>
-                <div class="flex space-x-4 space-x-reverse">
-                    <button onclick="closeAuthModal()" class="flex-1 bg-gray-700 hover:bg-gray-600 text-white py-3 px-6 rounded-lg font-semibold transition-colors">
-                        انصراف
-                    </button>
-                    <button onclick="redirectToLogin()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-semibold transition-colors">
-                        ورود
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-    {% endif %}
-
-    <!-- CSRF Token for AJAX requests -->
-    {% csrf_token %}
-
     <script>
-        let currentPost = null;
-        let postSlug = null;
-
         // Get CSRF token
         function getCSRFToken() {
-            return document.querySelector('[name=csrfmiddlewaretoken]').value;
+            return document.querySelector('[name=csrfmiddlewaretoken]')?.value ||
+                   document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ||
+                   getCookie('csrftoken');
         }
 
-        // Convert time to Persian relative time
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        // Add CSRF token to page
+        if (!document.querySelector('[name=csrfmiddlewaretoken]')) {
+            const csrfToken = getCookie('csrftoken');
+            if (csrfToken) {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'csrfmiddlewaretoken';
+                input.value = csrfToken;
+                document.body.appendChild(input);
+            }
+        }
+
+        // State
+        let currentPost = null;
+        let commentsNextUrl = null;
+        let isLoadingComments = false;
+        let allComments = [];
+
+        // Check if user is authenticated (simulated - in real Django template this would be {{ request.user.is_authenticated|yesno:"true,false" }})
+        const isAuthenticated = true; // This should be replaced with actual Django template variable
+
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Show success popup
+        function showSuccessPopup(message) {
+            // Create overlay
+            const overlay = document.createElement('div');
+            overlay.className = 'success-popup-overlay';
+
+            // Create popup
+            const popup = document.createElement('div');
+            popup.className = 'success-popup';
+            popup.innerHTML = `
+                <div class="text-4xl mb-4">✅</div>
+                <h3 class="text-xl font-bold mb-2">${escapeHtml(message)}</h3>
+                <p class="text-green-100 mb-4">نظر شما با موفقیت ثبت شد</p>
+                <button onclick="closeSuccessPopup()" class="bg-white bg-opacity-20 hover:bg-opacity-30 px-4 py-2 rounded-lg transition-all">
+                    باشه
+                </button>
+            `;
+
+            // Add to page
+            document.body.appendChild(overlay);
+            document.body.appendChild(popup);
+
+            // Auto close after 3 seconds
+            setTimeout(() => {
+                closeSuccessPopup();
+            }, 3000);
+
+            // Close on overlay click
+            overlay.addEventListener('click', closeSuccessPopup);
+        }
+
+        // Close success popup
+        function closeSuccessPopup() {
+            const overlay = document.querySelector('.success-popup-overlay');
+            const popup = document.querySelector('.success-popup');
+
+            if (overlay) overlay.remove();
+            if (popup) popup.remove();
+        }
+
+        // Convert datetime to Persian relative time
         function getRelativeTimePersian(dateString) {
             const now = new Date();
             const publishedDate = new Date(dateString);
@@ -291,248 +405,364 @@
 
         // Get post slug from URL
         function getPostSlug() {
-            // Extract slug from URL path: /post/my-post-slug/
             const path = window.location.pathname;
-            const match = path.match(/\/post\/([^\/]+)\//);
+            const match = path.match(/\/post\/([^\/]+)\/?$/);
             return match ? match[1] : null;
         }
 
-        // Load post from API
-        async function loadPost(slug = null) {
-            try {
-                showLoading();
-
-                if (!slug) {
-                    slug = getPostSlug();
-                }
-                postSlug = slug;
-
-                console.log('Loading post with slug:', slug);
-
-                const response = await fetch(`http://127.0.0.1:8000/api/post/${slug}/`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    }
-                });
-
-                console.log('Response status:', response.status);
-
-                if (!response.ok) {
-                    if (response.status === 404) {
-                        throw new Error('پست مورد نظر یافت نشد');
-                    }
-                    throw new Error(`خطا در بارگذاری: ${response.status}`);
-                }
-
-                const post = await response.json();
-                console.log('Post data:', post);
-
-                currentPost = post;
-                displayPost(post);
-                showPost();
-
-            } catch (error) {
-                console.error('Error loading post:', error);
-                showError(error.message);
-            }
-        }
-
-        // Display post content
-        function displayPost(post) {
-            // Set title
-            document.getElementById('post-title').textContent = post.title;
-            document.title = post.title;
-
-            // Set author
-            document.getElementById('post-author').textContent = post.author;
-
-            // Set status
-            const statusText = post.status === 'published' ? 'منتشر شده' : post.status;
-            document.getElementById('post-status').textContent = statusText;
-
-            // Set published time
-            if (post.published_at) {
-                const relativeTime = getRelativeTimePersian(post.published_at);
-                document.getElementById('post-published-time').textContent = relativeTime;
-            }
-
-            // Set category
-            if (post.category) {
-                document.getElementById('category-text').textContent = post.category;
-                document.getElementById('category-container').classList.remove('hidden');
-            } else {
-                document.getElementById('category-container').classList.add('hidden');
-            }
-
-            // Set image
-            const postImage = document.getElementById('post-image');
-            if (post.featured_image) {
-                postImage.src = post.featured_image;
-                postImage.alt = post.title;
-            } else {
-                postImage.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDgwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjMzc0MTUxIi8+CjxwYXRoIGQ9Ik0zNTAgMTUwSDQ1MFYyNTBIMzUwVjE1MFoiIGZpbGw9IiM2QjcyODkiLz4KPHBhdGggZD0iTTM4MCAyMDBMNDEwIDE3MEg0MjBMMzkwIDIzMEgzODBWMjAwWiIgZmlsbD0iIzlDQTRBRiIvPgo8L3N2Zz4=';
-                postImage.alt = 'تصویر پیش‌فرض';
-            }
-
-            // Set body content
-            if (post.body) {
-                document.getElementById('post-body').innerHTML = `<p class="text-lg leading-relaxed text-gray-300">${post.body}</p>`;
-            } else {
-                document.getElementById('post-body').innerHTML = `<p class="text-lg leading-relaxed text-gray-500 italic">محتوای پست در دسترس نیست</p>`;
-            }
-
-            // Set like button
-            updateLikeButton(post.is_liked, post.likes);
-        }
-
-        // Update like button appearance
-        function updateLikeButton(isLiked, likeCount) {
-            const likeBtn = document.getElementById('like-btn');
-            const likeCountSpan = document.getElementById('like-count');
-            const heartIcon = document.getElementById('heart-icon');
-            const heartPath = document.getElementById('heart-path');
-
-            likeCountSpan.textContent = likeCount;
-
-            if (isLiked) {
-                likeBtn.className = 'like-btn liked px-6 py-3 rounded-lg font-semibold flex items-center';
-                heartIcon.setAttribute('fill', 'currentColor');
-                heartPath.setAttribute('fill', 'currentColor');
-            } else {
-                likeBtn.className = 'like-btn not-liked px-6 py-3 rounded-lg font-semibold flex items-center';
-                heartIcon.setAttribute('fill', 'none');
-                heartIcon.setAttribute('stroke', 'currentColor');
-                heartIcon.setAttribute('stroke-width', '2');
-                heartPath.setAttribute('fill', 'none');
-                heartPath.setAttribute('stroke', 'currentColor');
-                heartPath.setAttribute('stroke-width', '2');
-            }
-        }
-
-        // Handle like button click
-        async function toggleLike() {
-            if (!currentPost) return;
-
-            // Check authentication using Django template context
-            const isAuthenticated = {{ request.user.is_authenticated|yesno:"true,false" }};
-
-            if (!isAuthenticated) {
-                showAuthModal();
+        // Fetch post data
+        async function fetchPost() {
+            const slug = getPostSlug();
+            if (!slug) {
+                showError();
                 return;
             }
 
             try {
-                const response = await fetch(`http://127.0.0.1:8000/api/post/${currentPost.id}/like`, {
+                // Decode the slug first (in case it's already encoded in URL), then encode it properly for API
+                const decodedSlug = decodeURIComponent(slug);
+                const response = await fetch(`/api/post/${encodeURIComponent(decodedSlug)}/`);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const post = await response.json();
+                currentPost = post;
+                displayPost(post);
+
+                // Load comments
+                loadComments();
+
+            } catch (error) {
+                console.error('Error fetching post:', error);
+                showError();
+            }
+        }
+
+        // Display post
+        function displayPost(post) {
+            // Hide loading, show content
+            document.getElementById('post-loading').classList.add('hidden');
+            document.getElementById('post-content').classList.remove('hidden');
+
+            // Set page title
+            document.getElementById('page-title').textContent = escapeHtml(post.title);
+            document.title = escapeHtml(post.title) + ' - وبلاگ تکنولوژی';
+
+            // Fill post data
+            document.getElementById('post-category').textContent = escapeHtml(post.category);
+            document.getElementById('post-title').textContent = escapeHtml(post.title);
+            document.getElementById('post-author').textContent = escapeHtml(post.author);
+            document.getElementById('post-date').textContent = getRelativeTimePersian(post.published_at);
+            document.getElementById('post-comments-count').textContent = post.comments;
+
+            // Set post body with proper formatting
+            const bodyElement = document.getElementById('post-body');
+            const formattedBody = escapeHtml(post.body).replace(/\n/g, '<br>');
+            bodyElement.innerHTML = formattedBody;
+
+            // Handle featured image
+            if (post.featured_image && post.featured_image.trim() !== '') {
+                const imageContainer = document.getElementById('post-image-container');
+                const imageElement = document.getElementById('post-image');
+
+                // Set image source and alt text
+                imageElement.src = post.featured_image;
+                imageElement.alt = escapeHtml(post.title);
+
+                // Handle image load success
+                imageElement.onload = function() {
+                    imageContainer.classList.remove('hidden');
+                };
+
+                // Handle image load error
+                imageElement.onerror = function() {
+                    console.log('Image failed to load:', post.featured_image);
+                    imageContainer.classList.add('hidden');
+                };
+
+                // Show container immediately (will be hidden if image fails)
+                imageContainer.classList.remove('hidden');
+            } else {
+                // No image provided, keep container hidden
+                document.getElementById('post-image-container').classList.add('hidden');
+            }
+
+            // Setup like section
+            setupLikeSection(post);
+
+            // Setup comment form if authenticated
+            if (isAuthenticated) {
+                setupCommentForm();
+            }
+        }
+
+        // Setup like section
+        function setupLikeSection(post) {
+            const likeSection = document.getElementById('like-section');
+
+            if (isAuthenticated) {
+                const likeClass = post.is_liked ? 'liked' : 'not-liked';
+                const heartIcon = post.is_liked ? '❤️' : '🤍';
+
+                likeSection.innerHTML = `
+                    <button
+                        id="like-btn"
+                        onclick="toggleLike()"
+                        class="like-btn ${likeClass} flex items-center px-4 py-2 rounded-lg font-semibold"
+                    >
+                        <span class="text-lg ml-2">${heartIcon}</span>
+                        <span id="like-count">${post.likes}</span>
+                        <span class="mr-1">پسندیدن</span>
+                    </button>
+                `;
+            } else {
+                likeSection.innerHTML = `
+                    <div class="flex items-center text-gray-400">
+                        <span class="text-lg ml-2">❤️</span>
+                        <span>${post.likes} پسندیدن</span>
+                    </div>
+                `;
+            }
+        }
+
+        // Toggle like
+        async function toggleLike() {
+            if (!isAuthenticated || !currentPost) return;
+
+            const likeBtn = document.getElementById('like-btn');
+            const likeCount = document.getElementById('like-count');
+
+            // Disable button during request
+            likeBtn.disabled = true;
+            likeBtn.style.opacity = '0.7';
+
+            try {
+                const response = await fetch(`/api/post/${currentPost.id}/like/`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'X-CSRFToken': getCSRFToken(),
-                    }
+                    },
                 });
 
-                if (response.status === 403) {
-                    // User not authenticated (fallback check)
-                    showAuthModal();
-                    return;
+                if (response.ok) {
+                    // Toggle like state
+                    currentPost.is_liked = !currentPost.is_liked;
+                    currentPost.likes += currentPost.is_liked ? 1 : -1;
+
+                    // Update UI
+                    const heartIcon = currentPost.is_liked ? '❤️' : '🤍';
+                    const likeClass = currentPost.is_liked ? 'liked' : 'not-liked';
+
+                    likeBtn.className = `like-btn ${likeClass} flex items-center px-4 py-2 rounded-lg font-semibold`;
+                    likeBtn.querySelector('span').textContent = heartIcon;
+                    likeCount.textContent = currentPost.likes;
                 }
-
-                if (!response.ok) {
-                    throw new Error('خطا در ثبت پسندیدن');
-                }
-
-                const result = await response.json();
-                console.log('Like result:', result);
-
-                // Update like status
-                if (result.message === 'liked') {
-                    currentPost.is_liked = true;
-                    currentPost.likes += 1;
-                } else if (result.message === 'unliked') {
-                    currentPost.is_liked = false;
-                    currentPost.likes -= 1;
-                }
-
-                updateLikeButton(currentPost.is_liked, currentPost.likes);
 
             } catch (error) {
                 console.error('Error toggling like:', error);
-                alert('خطا در ثبت پسندیدن. لطفاً دوباره تلاش کنید.');
+            } finally {
+                likeBtn.disabled = false;
+                likeBtn.style.opacity = '1';
             }
         }
 
-        // Show authentication modal
-        function showAuthModal() {
-            const authModal = document.getElementById('auth-modal');
-            if (authModal) {
-                authModal.classList.remove('hidden');
+        // Setup comment form
+        function setupCommentForm() {
+            document.getElementById('comment-form-section').classList.remove('hidden');
+
+            const form = document.getElementById('comment-form');
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                await submitComment();
+            });
+        }
+
+        // Submit comment
+        async function submitComment() {
+            const form = document.getElementById('comment-form');
+            const contentInput = document.getElementById('comment-content');
+            const submitBtn = document.getElementById('submit-comment-btn');
+
+            const content = contentInput.value.trim();
+            if (!content) return;
+
+            // Disable form during submission
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'در حال ارسال...';
+
+            try {
+                const response = await fetch(`/api/post/${currentPost.id}/comments/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCSRFToken(),
+                    },
+                    body: JSON.stringify({ content: content })
+                });
+
+                if (response.ok) {
+                    const newComment = await response.json();
+
+                    // Clear form
+                    contentInput.value = '';
+
+                    // Add comment to the beginning of the list
+                    addCommentToList(newComment, true);
+
+                    // Update comment count
+                    currentPost.comments += 1;
+                    document.getElementById('post-comments-count').textContent = currentPost.comments;
+
+                    // Hide no comments message if visible
+                    document.getElementById('no-comments').classList.add('hidden');
+
+                    // Show success popup
+                    showSuccessPopup('نظر ارسال شد!');
+
+                } else {
+                    alert('خطا در ارسال نظر. لطفاً دوباره تلاش کنید.');
+                }
+
+            } catch (error) {
+                console.error('Error submitting comment:', error);
+                alert('خطا در ارسال نظر. لطفاً دوباره تلاش کنید.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'ارسال نظر';
             }
         }
 
-        // Close authentication modal
-        function closeAuthModal() {
-            const authModal = document.getElementById('auth-modal');
-            if (authModal) {
-                authModal.classList.add('hidden');
+        // Load comments
+        async function loadComments(url = null) {
+            if (isLoadingComments) return;
+
+            isLoadingComments = true;
+            document.getElementById('comments-loading').classList.remove('hidden');
+
+            try {
+                const apiUrl = url || `/api/post/${currentPost.id}/comments/`;
+                const response = await fetch(apiUrl);
+
+                if (response.ok) {
+                    const data = await response.json();
+
+                    // Update next URL for infinite scroll
+                    commentsNextUrl = data.next;
+
+                    // Add comments to list
+                    data.results.forEach(comment => {
+                        addCommentToList(comment, false);
+                    });
+
+                    // Show no comments message if no comments exist
+                    if (allComments.length === 0 && data.results.length === 0) {
+                        document.getElementById('no-comments').classList.remove('hidden');
+                    }
+                }
+
+            } catch (error) {
+                console.error('Error loading comments:', error);
+            } finally {
+                isLoadingComments = false;
+                document.getElementById('comments-loading').classList.add('hidden');
             }
         }
 
-        // Redirect to login page with next parameter
-        function redirectToLogin() {
-            // Get current page path for next parameter (no need for full URL)
-            const currentPath = window.location.pathname + window.location.search;
-            // Create login URL with next parameter pointing to current post path
-            const loginUrl = "{% url 'accounts:login' %}" + "?next=" + encodeURIComponent(currentPath);
-            window.location.href = loginUrl;
-        }
+        // Add comment to list
+        function addCommentToList(comment, prepend = false) {
+            const container = document.getElementById('comments-container');
 
-        // Go back to previous page
-        function goBack() {
-            if (window.history.length > 1) {
-                window.history.back();
+            // Create avatar - always show fallback first, then try to load real image
+            const firstLetter = comment.author ? comment.author.charAt(0).toUpperCase() : 'U';
+
+            const commentElement = document.createElement('div');
+            commentElement.className = 'comment-card rounded-xl p-6 mb-4';
+            commentElement.innerHTML = `
+                <div class="flex items-start mb-3">
+                    <div class="flex-shrink-0 ml-3">
+                        <div class="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-sm avatar-fallback">
+                            ${firstLetter}
+                        </div>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center justify-between mb-2">
+                            <h4 class="font-semibold text-white">${escapeHtml(comment.author)}</h4>
+                            <p class="text-sm text-gray-400 flex-shrink-0">${getRelativeTimePersian(comment.created_at)}</p>
+                        </div>
+                        <div class="text-gray-200 leading-relaxed">
+                            ${escapeHtml(comment.content).replace(/\n/g, '<br>')}
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Try to load avatar image if available
+            if (comment.avatar && comment.avatar.trim() !== '' && comment.avatar !== 'null' && comment.avatar !== null) {
+                const avatarContainer = commentElement.querySelector('.flex-shrink-0');
+                const fallbackDiv = avatarContainer.querySelector('.avatar-fallback');
+
+                const img = document.createElement('img');
+                // Make sure avatar URL is absolute - if it starts with /, add the origin
+                let avatarUrl = comment.avatar;
+                if (avatarUrl.startsWith('/')) {
+                    avatarUrl = window.location.origin + avatarUrl;
+                } else if (!avatarUrl.startsWith('http')) {
+                    // If it's a relative path without leading slash, add origin, media prefix and slash
+                    avatarUrl = window.location.origin + '/media/' + avatarUrl;
+                }
+                img.src = avatarUrl;
+                img.alt = escapeHtml(comment.author);
+                img.className = 'w-10 h-10 rounded-full object-cover';
+
+                img.onload = function() {
+                    // Replace fallback with actual image
+                    avatarContainer.replaceChild(img, fallbackDiv);
+                };
+
+                img.onerror = function() {
+                    // Keep fallback if image fails to load
+                    console.log('Avatar failed to load for:', comment.author);
+                };
+            }
+
+            if (prepend) {
+                container.insertBefore(commentElement, container.firstChild);
+                allComments.unshift(comment);
             } else {
-                // Fallback to posts list
-                window.location.href = '/';
+                container.appendChild(commentElement);
+                allComments.push(comment);
             }
         }
 
-        // UI State Management
-        function showLoading() {
-            document.getElementById('loading').classList.remove('hidden');
-            document.getElementById('post-content').classList.add('hidden');
-            document.getElementById('error').classList.add('hidden');
-        }
+        // Infinite scroll for comments
+        function setupInfiniteScroll() {
+            window.addEventListener('scroll', () => {
+                if (commentsNextUrl && !isLoadingComments) {
+                    const scrollPosition = window.innerHeight + window.scrollY;
+                    const documentHeight = document.documentElement.offsetHeight;
 
-        function showPost() {
-            document.getElementById('loading').classList.add('hidden');
-            document.getElementById('post-content').classList.remove('hidden');
-            document.getElementById('error').classList.add('hidden');
-        }
-
-        function showError(message = 'خطا در بارگذاری پست') {
-            document.getElementById('loading').classList.add('hidden');
-            document.getElementById('post-content').classList.add('hidden');
-            document.getElementById('error').classList.remove('hidden');
-            document.getElementById('error-message').textContent = message;
-        }
-
-        // Event Listeners
-        document.getElementById('like-btn').addEventListener('click', toggleLike);
-
-        // Close modal when clicking outside (only if modal exists)
-        const authModal = document.getElementById('auth-modal');
-        if (authModal) {
-            authModal.addEventListener('click', function(e) {
-                if (e.target === this) {
-                    closeAuthModal();
+                    // Load more when user is 200px from bottom
+                    if (scrollPosition >= documentHeight - 200) {
+                        loadComments(commentsNextUrl);
+                    }
                 }
             });
         }
 
-        // Load post when page loads
+        // Show error
+        function showError() {
+            document.getElementById('post-loading').classList.add('hidden');
+            document.getElementById('post-error').classList.remove('hidden');
+        }
+
+        // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
-            loadPost();
+            fetchPost();
+            setupInfiniteScroll();
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'979641d503e32a11',t:'MTc1NjkxMzA5OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97c0bc9d37ab698a',t:'MTc1NzM1ODUzMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
