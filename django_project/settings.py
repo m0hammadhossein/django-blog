@@ -120,7 +120,7 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 
 USE_TZ = True
-
+AUTH_USER_MODEL = 'accounts.CustomUser'
 MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_URL = '/media/'
 # Email backend
