@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>داشبورد نویسنده - وبلاگ تکنولوژی</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Vazirmatn', 'Tahoma', sans-serif;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .sidebar-item {
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-item:hover {
+            background: rgba(59, 130, 246, 0.1);
+            border-right: 4px solid #3b82f6;
+        }
+
+        .sidebar-item.active {
+            background: rgba(59, 130, 246, 0.2);
+            border-right: 4px solid #3b82f6;
+            color: #3b82f6;
+        }
+
+        .card {
+            background: linear-gradient(135deg, #374151 0%, #1f2937 100%);
+            border: 1px solid rgba(75, 85, 99, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        .loading-skeleton {
+            background: linear-gradient(90deg, #374151 25%, #4b5563 50%, #374151 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .success-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            min-width: 300px;
+            text-align: center;
+            animation: popupSlideIn 0.3s ease-out;
+        }
+
+        .success-popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 999;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes popupSlideIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .post-card {
+            transition: all 0.3s ease;
+        }
+
+        .post-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .status-published {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .status-draft {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+
+        .avatar-preview {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: -9999px;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-gray-800 to-gray-900 shadow-2xl border-b border-gray-700">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <div class="text-3xl ml-4">💻</div>
+                    <h1 class="text-3xl font-bold gradient-text">
+                        <a href="/" class="hover:opacity-80 transition-opacity">وبلاگ تکنولوژی</a>
+                    </h1>
+                </div>
+                <div class="flex items-center space-x-4 space-x-reverse">
+                    <span class="text-gray-300">خوش آمدید، <span id="header-username" class="text-blue-400 font-semibold"></span></span>
+                    <button onclick="logout()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors">
+                        خروج
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-gray-800 border-l border-gray-700">
+            <nav class="p-4">
+                <ul class="space-y-2">
+                    <li>
+                        <button onclick="showSection('profile')" class="sidebar-item w-full text-right px-4 py-3 rounded-lg flex items-center active" id="profile-tab">
+                            <span class="text-xl ml-3">👤</span>
+                            پروفایل
+                        </button>
+                    </li>
+                    <li id="my-posts-tab-container" class="hidden">
+                        <button onclick="showSection('my-posts')" class="sidebar-item w-full text-right px-4 py-3 rounded-lg flex items-center" id="my-posts-tab">
+                            <span class="text-xl ml-3">📝</span>
+                            مقالات من
+                        </button>
+                    </li>
+                    <li id="new-post-tab-container" class="hidden">
+                        <button onclick="showSection('new-post')" class="sidebar-item w-full text-right px-4 py-3 rounded-lg flex items-center" id="new-post-tab">
+                            <span class="text-xl ml-3">✍️</span>
+                            انتشار مقاله جدید
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-8">
+            <!-- Profile Section -->
+            <section id="profile-section" class="section">
+                <div class="max-w-4xl mx-auto">
+                    <h2 class="text-3xl font-bold mb-8 gradient-text">👤 پروفایل کاربری</h2>
+
+                    <!-- Loading State -->
+                    <div id="profile-loading" class="card rounded-xl p-8">
+                        <div class="flex items-center space-x-6 space-x-reverse mb-6">
+                            <div class="loading-skeleton w-32 h-32 rounded-full"></div>
+                            <div class="flex-1">
+                                <div class="loading-skeleton h-6 w-1/3 rounded mb-4"></div>
+                                <div class="loading-skeleton h-4 w-1/2 rounded mb-2"></div>
+                                <div class="loading-skeleton h-4 w-2/3 rounded"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Profile Content -->
+                    <div id="profile-content" class="hidden">
+                        <form id="profile-form" class="card rounded-xl p-8">
+                            <div class="flex flex-col md:flex-row items-start space-y-6 md:space-y-0 md:space-x-8 md:space-x-reverse mb-8">
+                                <!-- Avatar -->
+                                <div class="flex flex-col items-center">
+                                    <img id="avatar-preview" class="avatar-preview mb-4" src="" alt="آواتار">
+                                    <div class="file-input-wrapper">
+                                        <input type="file" id="avatar-input" accept="image/*" onchange="previewAvatar(this)">
+                                        <button type="button" onclick="document.getElementById('avatar-input').click()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
+                                            تغییر آواتار
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Profile Info -->
+                                <div class="flex-1 w-full">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div>
+                                            <label class="block text-sm font-semibold text-gray-300 mb-2">نام کاربری</label>
+                                            <input type="text" id="username" class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white" readonly>
+                                        </div>
+
+                                        <div>
+                                            <label class="block text-sm font-semibold text-gray-300 mb-2">ایمیل</label>
+                                            <input type="email" id="email" name="email" class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-6">
+                                        <label class="block text-sm font-semibold text-gray-300 mb-2">بیوگرافی</label>
+                                        <textarea id="biography" name="biography" rows="4" class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500 resize-none" placeholder="درباره خود بنویسید..."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex justify-end">
+                                <button type="submit" class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 disabled:opacity-50" id="save-profile-btn">
+                                    ذخیره تغییرات
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <!-- My Posts Section -->
+            <section id="my-posts-section" class="section hidden">
+                <div class="max-w-6xl mx-auto">
+                    <div class="flex items-center justify-between mb-8">
+                        <h2 class="text-3xl font-bold gradient-text">📝 مقالات من</h2>
+                        <div id="posts-stats" class="text-gray-400">
+                            <!-- Will be populated with post count -->
+                        </div>
+                    </div>
+
+                    <!-- Posts Loading -->
+                    <div id="posts-loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="card rounded-xl p-6">
+                            <div class="loading-skeleton h-48 w-full rounded mb-4"></div>
+                            <div class="loading-skeleton h-6 w-3/4 rounded mb-2"></div>
+                            <div class="loading-skeleton h-4 w-1/2 rounded"></div>
+                        </div>
+                        <div class="card rounded-xl p-6">
+                            <div class="loading-skeleton h-48 w-full rounded mb-4"></div>
+                            <div class="loading-skeleton h-6 w-3/4 rounded mb-2"></div>
+                            <div class="loading-skeleton h-4 w-1/2 rounded"></div>
+                        </div>
+                        <div class="card rounded-xl p-6">
+                            <div class="loading-skeleton h-48 w-full rounded mb-4"></div>
+                            <div class="loading-skeleton h-6 w-3/4 rounded mb-2"></div>
+                            <div class="loading-skeleton h-4 w-1/2 rounded"></div>
+                        </div>
+                    </div>
+
+                    <!-- Posts Grid -->
+                    <div id="posts-grid" class="hidden">
+                        <!-- Posts will be populated here -->
+                    </div>
+
+                    <!-- No Posts Message -->
+                    <div id="no-posts" class="text-center py-16 hidden">
+                        <div class="text-6xl mb-4">📝</div>
+                        <h3 class="text-xl font-bold mb-2 text-gray-300">هنوز مقاله‌ای ننوشته‌اید</h3>
+                        <p class="text-gray-400 mb-6">اولین مقاله خود را بنویسید!</p>
+                        <button onclick="showSection('new-post')" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-colors">
+                            نوشتن مقاله جدید
+                        </button>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div id="pagination" class="flex justify-center mt-8 hidden">
+                        <!-- Pagination will be populated here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- New Post Section -->
+            <section id="new-post-section" class="section hidden">
+                <div class="max-w-4xl mx-auto">
+                    <h2 class="text-3xl font-bold mb-8 gradient-text">✍️ انتشار مقاله جدید</h2>
+
+                    <form id="new-post-form" class="card rounded-xl p-8">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-300 mb-2">عنوان مقاله *</label>
+                                <input type="text" id="new-post-title" name="title" class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500" placeholder="عنوان مقاله را وارد کنید..." required>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-300 mb-2">دسته‌بندی *</label>
+                                <select id="new-post-category" name="category" class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500" required>
+                                    <option value="">انتخاب دسته‌بندی...</option>
+                                    <!-- Categories will be populated here -->
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-300 mb-2">وضعیت انتشار</label>
+                                <select id="new-post-status" name="status" class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500">
+                                    <option value="draft">پیش‌نویس</option>
+                                    <option value="published">منتشر شده</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-300 mb-2">تصویر شاخص</label>
+                                <input type="file" id="new-post-image" name="featured_image" accept="image/*" class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500">
+                            </div>
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-sm font-semibold text-gray-300 mb-2">محتوای مقاله *</label>
+                            <textarea id="new-post-body" name="body" rows="12" class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500 resize-none" placeholder="محتوای مقاله را بنویسید..." required></textarea>
+                        </div>
+
+                        <div class="flex justify-end space-x-4 space-x-reverse">
+                            <button type="button" onclick="resetNewPostForm()" class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg transition-colors">
+                                پاک کردن فرم
+                            </button>
+                            <button type="submit" class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 disabled:opacity-50" id="publish-post-btn">
+                                انتشار مقاله
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Edit Post Section -->
+            <section id="edit-post-section" class="section hidden">
+                <div class="max-w-4xl mx-auto">
+                    <div class="flex items-center justify-between mb-8">
+                        <h2 class="text-3xl font-bold gradient-text">✏️ ویرایش مقاله</h2>
+                        <button onclick="showSection('my-posts')" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors">
+                            بازگشت به لیست
+                        </button>
+                    </div>
+
+                    <!-- Edit Loading -->
+                    <div id="edit-loading" class="card rounded-xl p-8">
+                        <div class="loading-skeleton h-12 w-full rounded mb-6"></div>
+                        <div class="loading-skeleton h-12 w-full rounded mb-6"></div>
+                        <div class="loading-skeleton h-64 w-full rounded mb-6"></div>
+                    </div>
+
+                    <!-- Edit Form -->
+                    <form id="edit-post-form" class="card rounded-xl p-8 hidden">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-300 mb-2">عنوان مقاله *</label>
+                                <input type="text" id="edit-post-title" name="title" class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500" required>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-300 mb-2">دسته‌بندی *</label>
+                                <select id="edit-post-category" name="category" class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500" required>
+                                    <!-- Categories will be populated here -->
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-300 mb-2">وضعیت انتشار</label>
+                                <select id="edit-post-status" name="status" class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500">
+                                    <option value="draft">پیش‌نویس</option>
+                                    <option value="published">منتشر شده</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-300 mb-2">تصویر شاخص</label>
+                                <input type="file" id="edit-post-image" name="featured_image" accept="image/*" class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500">
+                                <div id="current-image" class="mt-2 hidden">
+                                    <p class="text-sm text-gray-400 mb-2">تصویر فعلی:</p>
+                                    <img id="current-image-preview" class="w-32 h-20 object-cover rounded" alt="تصویر فعلی">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-sm font-semibold text-gray-300 mb-2">محتوای مقاله *</label>
+                            <textarea id="edit-post-body" name="body" rows="12" class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500 resize-none" required></textarea>
+                        </div>
+
+                        <div class="flex justify-between">
+                            <button type="button" onclick="deletePost(currentEditingPostId)" class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg transition-colors" id="delete-post-btn">
+                                حذف مقاله
+                            </button>
+                            <div class="flex space-x-4 space-x-reverse">
+                                <button type="button" onclick="showSection('my-posts')" class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg transition-colors">
+                                    انصراف
+                                </button>
+                                <button type="submit" class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 disabled:opacity-50" id="update-post-btn">
+                                    بروزرسانی مقاله
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // State
+        let currentUser = null;
+        let currentPosts = [];
+        let categories = [];
+        let currentPage = 1;
+        let totalPosts = 0;
+        let currentEditingPostId = null;
+
+        // Get CSRF token
+        function getCSRFToken() {
+            return document.querySelector('[name=csrfmiddlewaretoken]')?.value ||
+                   document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ||
+                   getCookie('csrftoken');
+        }
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        // Add CSRF token to page
+        if (!document.querySelector('[name=csrfmiddlewaretoken]')) {
+            const csrfToken = getCookie('csrftoken');
+            if (csrfToken) {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'csrfmiddlewaretoken';
+                input.value = csrfToken;
+                document.body.appendChild(input);
+            }
+        }
+
+        // Escape HTML
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Show success popup
+        function showSuccessPopup(message) {
+            const overlay = document.createElement('div');
+            overlay.className = 'success-popup-overlay';
+
+            const popup = document.createElement('div');
+            popup.className = 'success-popup';
+            popup.innerHTML = `
+                <div class="text-4xl mb-4">✅</div>
+                <h3 class="text-xl font-bold mb-2">${escapeHtml(message)}</h3>
+                <button onclick="closeSuccessPopup()" class="bg-white bg-opacity-20 hover:bg-opacity-30 px-4 py-2 rounded-lg transition-all mt-4">
+                    باشه
+                </button>
+            `;
+
+            document.body.appendChild(overlay);
+            document.body.appendChild(popup);
+
+            setTimeout(() => {
+                closeSuccessPopup();
+            }, 3000);
+
+            overlay.addEventListener('click', closeSuccessPopup);
+        }
+
+        function closeSuccessPopup() {
+            const overlay = document.querySelector('.success-popup-overlay');
+            const popup = document.querySelector('.success-popup');
+
+            if (overlay) overlay.remove();
+            if (popup) popup.remove();
+        }
+
+        // Show section
+        function showSection(sectionName) {
+            console.log('Showing section:', sectionName);
+
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.add('hidden');
+            });
+
+            // Remove active class from all tabs
+            document.querySelectorAll('.sidebar-item').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show selected section - check if element exists
+            const sectionElement = document.getElementById(`${sectionName}-section`);
+            const tabElement = document.getElementById(`${sectionName}-tab`);
+
+            if (sectionElement) {
+                sectionElement.classList.remove('hidden');
+            } else {
+                console.error(`Section element not found: ${sectionName}-section`);
+                return;
+            }
+
+            if (tabElement) {
+                tabElement.classList.add('active');
+            } else {
+                console.error(`Tab element not found: ${sectionName}-tab`);
+            }
+
+            // Load section data
+            if (sectionName === 'my-posts') {
+                console.log('Loading my posts...');
+                loadMyPosts();
+            } else if (sectionName === 'new-post') {
+                console.log('Loading categories for new post...');
+                loadCategories();
+            } else if (sectionName === 'edit-post') {
+                console.log('Showing edit post section...');
+                // Categories will be loaded in editPost function
+            }
+        }
+
+        // Load user profile
+        async function loadProfile() {
+            try {
+                const response = await fetch('/api/author/profile/');
+                if (response.ok) {
+                    currentUser = await response.json();
+                    displayProfile(currentUser);
+
+                    // Update header
+                    document.getElementById('header-username').textContent = currentUser.username;
+
+                    // Show staff sections if user is staff
+                    if (currentUser.is_staff) {
+                        document.getElementById('my-posts-tab-container').classList.remove('hidden');
+                        document.getElementById('new-post-tab-container').classList.remove('hidden');
+                    }
+                } else {
+                    throw new Error('Failed to load profile');
+                }
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                alert('خطا در بارگذاری پروفایل');
+            }
+        }
+
+        // Display profile
+        function displayProfile(user) {
+            document.getElementById('profile-loading').classList.add('hidden');
+            document.getElementById('profile-content').classList.remove('hidden');
+
+            // Set avatar
+            const avatarPreview = document.getElementById('avatar-preview');
+            if (user.avatar && user.avatar.trim() !== '') {
+                avatarPreview.src = user.avatar;
+            } else {
+                // Create fallback avatar with first letter
+                const firstLetter = user.username ? user.username.charAt(0).toUpperCase() : 'U';
+                avatarPreview.src = `data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120"><rect width="120" height="120" fill="%233b82f6"/><text x="60" y="75" font-family="Arial" font-size="48" fill="white" text-anchor="middle">${firstLetter}</text></svg>`;
+            }
+
+            // Fill form
+            document.getElementById('username').value = user.username || '';
+            document.getElementById('email').value = user.email || '';
+            document.getElementById('biography').value = user.biography || '';
+        }
+
+        // Preview avatar
+        function previewAvatar(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('avatar-preview').src = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Save profile
+        async function saveProfile(event) {
+            event.preventDefault();
+
+            const submitBtn = document.getElementById('save-profile-btn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'در حال ذخیره...';
+
+            try {
+                const formData = new FormData();
+                formData.append('email', document.getElementById('email').value);
+                formData.append('biography', document.getElementById('biography').value);
+
+                const avatarInput = document.getElementById('avatar-input');
+                if (avatarInput.files[0]) {
+                    formData.append('avatar', avatarInput.files[0]);
+                }
+
+                const response = await fetch('/api/author/profile/', {
+                    method: 'PATCH',
+                    headers: {
+                        'X-CSRFToken': getCSRFToken(),
+                    },
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const updatedUser = await response.json();
+                    currentUser = updatedUser;
+                    showSuccessPopup('پروفایل با موفقیت بروزرسانی شد!');
+                } else {
+                    throw new Error('Failed to update profile');
+                }
+
+            } catch (error) {
+                console.error('Error saving profile:', error);
+                alert('خطا در ذخیره پروفایل');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'ذخیره تغییرات';
+            }
+        }
+
+        // Load categories
+        async function loadCategories() {
+            try {
+                console.log('Loading categories from: /api/category/');
+                const response = await fetch('/api/category/', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCSRFToken(),
+                    }
+                });
+
+                console.log('Categories response status:', response.status);
+
+                if (response.ok) {
+                    categories = await response.json();
+                    console.log('Categories loaded:', categories);
+                    populateCategories();
+                } else {
+                    console.error('Failed to load categories, status:', response.status);
+                    const errorData = await response.json().catch(() => ({}));
+                    console.error('Categories error data:', errorData);
+                }
+            } catch (error) {
+                console.error('Error loading categories:', error);
+            }
+        }
+
+        // Populate categories
+        function populateCategories() {
+            const newPostSelect = document.getElementById('new-post-category');
+            const editPostSelect = document.getElementById('edit-post-category');
+
+            [newPostSelect, editPostSelect].forEach(select => {
+                // Clear existing options except first one
+                while (select.children.length > 1) {
+                    select.removeChild(select.lastChild);
+                }
+
+                categories.forEach(category => {
+                    const option = document.createElement('option');
+                    option.value = category.name;
+                    option.textContent = category.name;
+                    select.appendChild(option);
+                });
+            });
+        }
+
+        // Load my posts
+        async function loadMyPosts(page = 1) {
+            document.getElementById('posts-loading').classList.remove('hidden');
+            document.getElementById('posts-grid').classList.add('hidden');
+            document.getElementById('no-posts').classList.add('hidden');
+
+            try {
+                const response = await fetch(`/api/author/posts/?page=${page}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    currentPosts = data.results;
+                    totalPosts = data.count;
+                    currentPage = page;
+
+                    displayMyPosts(data);
+                } else {
+                    throw new Error('Failed to load posts');
+                }
+            } catch (error) {
+                console.error('Error loading posts:', error);
+                alert('خطا در بارگذاری مقالات');
+            } finally {
+                document.getElementById('posts-loading').classList.add('hidden');
+            }
+        }
+
+        // Display my posts
+        function displayMyPosts(data) {
+            const postsGrid = document.getElementById('posts-grid');
+            const postsStats = document.getElementById('posts-stats');
+
+            // Update stats
+            postsStats.textContent = `مجموع ${data.count} مقاله`;
+
+            if (data.results.length === 0) {
+                document.getElementById('no-posts').classList.remove('hidden');
+                return;
+            }
+
+            // Clear grid
+            postsGrid.innerHTML = '';
+
+            // Add posts
+            data.results.forEach(post => {
+                const postCard = createPostCard(post);
+                postsGrid.appendChild(postCard);
+            });
+
+            document.getElementById('posts-grid').classList.remove('hidden');
+
+            // Update pagination
+            updatePagination(data);
+        }
+
+        // Create post card
+        function createPostCard(post) {
+            const card = document.createElement('div');
+            card.className = 'post-card card rounded-xl p-6';
+
+            const statusClass = post.status === 'published' ? 'status-published' : 'status-draft';
+            const statusText = post.status === 'published' ? 'منتشر شده' : 'پیش‌نویس';
+
+            const publishedDate = new Date(post.published_at).toLocaleDateString('fa-IR');
+
+            card.innerHTML = `
+                <div class="mb-4">
+                    ${post.featured_image ?
+                        `<img src="${post.featured_image}" alt="${escapeHtml(post.title)}" class="w-full h-48 object-cover rounded-lg mb-4">` :
+                        `<div class="w-full h-48 bg-gradient-to-r from-gray-600 to-gray-700 rounded-lg mb-4 flex items-center justify-center">
+                            <span class="text-4xl">📝</span>
+                        </div>`
+                    }
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="${statusClass} px-3 py-1 text-xs font-semibold text-white rounded-full">${statusText}</span>
+                        <span class="text-sm text-gray-400">${publishedDate}</span>
+                    </div>
+                </div>
+
+                <h3 class="text-lg font-bold mb-2 text-white line-clamp-2">${escapeHtml(post.title)}</h3>
+                <p class="text-gray-400 text-sm mb-4">${escapeHtml(post.category)}</p>
+
+                <div class="flex items-center justify-between text-sm text-gray-400 mb-4">
+                    <div class="flex items-center space-x-4 space-x-reverse">
+                        <span>❤️ ${post.likes}</span>
+                        <span>💬 ${post.comments}</span>
+                    </div>
+                </div>
+
+                <div class="flex space-x-2 space-x-reverse">
+                    <button onclick="editPost(${post.id})" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors text-sm">
+                        ویرایش
+                    </button>
+                    <button onclick="deletePost(${post.id})" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors text-sm">
+                        حذف
+                    </button>
+                </div>
+            `;
+
+            return card;
+        }
+
+        // Update pagination
+        function updatePagination(data) {
+            const pagination = document.getElementById('pagination');
+
+            if (!data.next && !data.previous) {
+                pagination.classList.add('hidden');
+                return;
+            }
+
+            pagination.classList.remove('hidden');
+            pagination.innerHTML = '';
+
+            // Calculate total pages
+            const totalPages = Math.ceil(data.count / 9); // 9 posts per page
+
+            // Previous button
+            if (data.previous) {
+                const prevBtn = document.createElement('button');
+                prevBtn.className = 'bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg mx-1 transition-colors';
+                prevBtn.textContent = 'قبلی';
+                prevBtn.onclick = () => loadMyPosts(currentPage - 1);
+                pagination.appendChild(prevBtn);
+            }
+
+            // Page numbers
+            const startPage = Math.max(1, currentPage - 2);
+            const endPage = Math.min(totalPages, currentPage + 2);
+
+            for (let i = startPage; i <= endPage; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.className = i === currentPage
+                    ? 'bg-blue-600 text-white px-4 py-2 rounded-lg mx-1'
+                    : 'bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg mx-1 transition-colors';
+                pageBtn.textContent = i;
+                pageBtn.onclick = () => loadMyPosts(i);
+                pagination.appendChild(pageBtn);
+            }
+
+            // Next button
+            if (data.next) {
+                const nextBtn = document.createElement('button');
+                nextBtn.className = 'bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg mx-1 transition-colors';
+                nextBtn.textContent = 'بعدی';
+                nextBtn.onclick = () => loadMyPosts(currentPage + 1);
+                pagination.appendChild(nextBtn);
+            }
+        }
+
+        // Edit post
+        async function editPost(postId) {
+            console.log('=== EDIT POST DEBUG START ===');
+            console.log('Starting edit for post ID:', postId);
+            console.log('Current user:', currentUser);
+            console.log('Categories loaded:', categories.length);
+
+            currentEditingPostId = postId;
+            showSection('edit-post');
+
+            const editLoading = document.getElementById('edit-loading');
+            const editForm = document.getElementById('edit-post-form');
+
+            if (editLoading) editLoading.classList.remove('hidden');
+            if (editForm) editForm.classList.add('hidden');
+
+            try {
+                // Load categories first if not loaded
+                if (categories.length === 0) {
+                    console.log('Categories not loaded, loading now...');
+                    await loadCategories();
+                    console.log('Categories after loading:', categories.length);
+                }
+
+                // Fetch post data
+                const apiUrl = `/api/author/post/${postId}/`;
+                console.log('Making API request to:', apiUrl);
+                console.log('Request headers will include:');
+                console.log('- Content-Type: application/json');
+                console.log('- X-CSRFToken:', getCSRFToken());
+
+                const response = await fetch(apiUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCSRFToken(),
+                    }
+                });
+
+                console.log('=== API RESPONSE DEBUG ===');
+                console.log('Response status:', response.status);
+                console.log('Response ok:', response.ok);
+                console.log('Response statusText:', response.statusText);
+                console.log('Response url:', response.url);
+
+                // Log response headers
+                console.log('Response headers:');
+                for (let [key, value] of response.headers.entries()) {
+                    console.log(`  ${key}: ${value}`);
+                }
+
+                if (response.ok) {
+                    const post = await response.json();
+                    console.log('=== POST DATA RECEIVED ===');
+                    console.log('Post data:', post);
+                    console.log('Post title:', post.title);
+                    console.log('Post category:', post.category);
+                    console.log('Post status:', post.status);
+                    console.log('Post body length:', post.body ? post.body.length : 0);
+
+                    displayEditForm(post);
+                    console.log('Edit form displayed successfully');
+                } else {
+                    console.log('=== API ERROR RESPONSE ===');
+                    let errorData = {};
+                    try {
+                        errorData = await response.json();
+                        console.log('Error data:', errorData);
+                    } catch (e) {
+                        console.log('Could not parse error response as JSON');
+                        const errorText = await response.text();
+                        console.log('Error response text:', errorText);
+                    }
+
+                    throw new Error(`API request failed with status ${response.status}: ${response.statusText}`);
+                }
+            } catch (error) {
+                console.log('=== EDIT POST ERROR ===');
+                console.error('Error type:', error.constructor.name);
+                console.error('Error message:', error.message);
+                console.error('Error stack:', error.stack);
+
+                alert(`خطا در بارگذاری مقاله: ${error.message}`);
+                showSection('my-posts');
+            }
+
+            console.log('=== EDIT POST DEBUG END ===');
+        }
+
+        // Display edit form
+        function displayEditForm(post) {
+            const editLoading = document.getElementById('edit-loading');
+            const editForm = document.getElementById('edit-post-form');
+
+            if (editLoading) editLoading.classList.add('hidden');
+            if (editForm) editForm.classList.remove('hidden');
+
+            // Fill form with post data - check if elements exist
+            const titleInput = document.getElementById('edit-post-title');
+            const statusSelect = document.getElementById('edit-post-status');
+            const bodyTextarea = document.getElementById('edit-post-body');
+            const categorySelect = document.getElementById('edit-post-category');
+
+            if (titleInput) titleInput.value = post.title || '';
+            if (statusSelect) statusSelect.value = post.status || 'draft';
+            if (bodyTextarea) bodyTextarea.value = post.body || '';
+
+            // Set category - make sure categories are loaded first
+            if (categorySelect) {
+                if (categories.length > 0) {
+                    categorySelect.value = post.category || '';
+                } else {
+                    // If categories not loaded yet, set after they load
+                    setTimeout(() => {
+                        if (categorySelect) categorySelect.value = post.category || '';
+                    }, 100);
+                }
+            }
+
+            // Show current image if exists
+            const currentImageDiv = document.getElementById('current-image');
+            const currentImagePreview = document.getElementById('current-image-preview');
+            const imageInput = document.getElementById('edit-post-image');
+
+            if (currentImageDiv && currentImagePreview) {
+                if (post.featured_image && post.featured_image.trim() !== '') {
+                    currentImagePreview.src = post.featured_image;
+                    currentImageDiv.classList.remove('hidden');
+                } else {
+                    currentImageDiv.classList.add('hidden');
+                }
+            }
+
+            // Clear file input
+            if (imageInput) imageInput.value = '';
+        }
+
+        // Update post
+        async function updatePost(event) {
+            event.preventDefault();
+
+            const submitBtn = document.getElementById('update-post-btn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'در حال بروزرسانی...';
+
+            try {
+                const formData = new FormData();
+
+                // Add all form fields
+                const title = document.getElementById('edit-post-title').value.trim();
+                const category = document.getElementById('edit-post-category').value;
+                const status = document.getElementById('edit-post-status').value;
+                const body = document.getElementById('edit-post-body').value.trim();
+
+                if (!title || !category || !body) {
+                    alert('لطفاً تمام فیلدهای ضروری را پر کنید');
+                    return;
+                }
+
+                formData.append('title', title);
+                formData.append('category', category);
+                formData.append('status', status);
+                formData.append('body', body);
+
+                // Add image if selected
+                const imageInput = document.getElementById('edit-post-image');
+                if (imageInput.files && imageInput.files[0]) {
+                    formData.append('featured_image', imageInput.files[0]);
+                }
+
+                const response = await fetch(`/api/author/post/${currentEditingPostId}/`, {
+                    method: 'PATCH',
+                    headers: {
+                        'X-CSRFToken': getCSRFToken(),
+                    },
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const updatedPost = await response.json();
+                    showSuccessPopup('مقاله با موفقیت بروزرسانی شد!');
+                    showSection('my-posts');
+                } else {
+                    const errorData = await response.json().catch(() => ({}));
+                    console.error('Update error:', errorData);
+
+                    if (response.status === 400) {
+                        alert('خطا در اعتبارسنجی داده‌ها. لطفاً فیلدها را بررسی کنید.');
+                    } else if (response.status === 404) {
+                        alert('مقاله یافت نشد');
+                    } else {
+                        alert('خطا در بروزرسانی مقاله');
+                    }
+                }
+
+            } catch (error) {
+                console.error('Error updating post:', error);
+                alert('خطا در ارتباط با سرور');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'بروزرسانی مقاله';
+            }
+        }
+
+        // Delete post
+        async function deletePost(postId) {
+            if (!confirm('آیا از حذف این مقاله اطمینان دارید؟')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/author/post/${postId}/`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCSRFToken(),
+                    }
+                });
+
+                if (response.ok || response.status === 204) {
+                    showSuccessPopup('مقاله با موفقیت حذف شد!');
+                    // If we're in edit mode, go back to posts list
+                    if (currentEditingPostId === postId) {
+                        currentEditingPostId = null;
+                    }
+                    showSection('my-posts');
+                } else {
+                    const errorData = await response.json().catch(() => ({}));
+                    console.error('Delete error:', errorData);
+
+                    if (response.status === 404) {
+                        alert('مقاله یافت نشد');
+                    } else {
+                        alert('خطا در حذف مقاله');
+                    }
+                }
+
+            } catch (error) {
+                console.error('Error deleting post:', error);
+                alert('خطا در ارتباط با سرور');
+            }
+        }
+
+        // Create new post
+        async function createPost(event) {
+            event.preventDefault();
+
+            const submitBtn = document.getElementById('publish-post-btn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'در حال انتشار...';
+
+            try {
+                const formData = new FormData();
+                formData.append('title', document.getElementById('new-post-title').value);
+                formData.append('category', document.getElementById('new-post-category').value);
+                formData.append('status', document.getElementById('new-post-status').value);
+                formData.append('body', document.getElementById('new-post-body').value);
+
+                const imageInput = document.getElementById('new-post-image');
+                if (imageInput.files[0]) {
+                    formData.append('featured_image', imageInput.files[0]);
+                }
+
+                const response = await fetch('/api/author/post/create/', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCSRFToken(),
+                    },
+                    body: formData
+                });
+
+                if (response.ok) {
+                    showSuccessPopup('مقاله با موفقیت منتشر شد!');
+                    resetNewPostForm();
+                    showSection('my-posts');
+                } else {
+                    throw new Error('Failed to create post');
+                }
+
+            } catch (error) {
+                console.error('Error creating post:', error);
+                alert('خطا در انتشار مقاله');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'انتشار مقاله';
+            }
+        }
+
+        // Reset new post form
+        function resetNewPostForm() {
+            document.getElementById('new-post-form').reset();
+        }
+
+        // Logout function
+        async function logout() {
+            try {
+                const response = await fetch('/accounts/logout/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCSRFToken(),
+                    }
+                });
+
+                // Redirect to home page regardless of response
+                window.location.href = '/';
+
+            } catch (error) {
+                console.error('Error during logout:', error);
+                // Still redirect even if there's an error
+                window.location.href = '/';
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing...');
+
+            loadProfile();
+            loadCategories();
+
+            // Setup form handlers
+            document.getElementById('profile-form').addEventListener('submit', saveProfile);
+            document.getElementById('new-post-form').addEventListener('submit', createPost);
+            document.getElementById('edit-post-form').addEventListener('submit', updatePost);
+
+            console.log('Initialization complete');
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97d8a94762ff7879',t:'MTc1NzYwOTM5Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

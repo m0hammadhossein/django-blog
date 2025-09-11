@@ -1,9 +1,9 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import PasswordResetView, LoginView, PasswordChangeView, PasswordResetDoneView, \
-    PasswordResetConfirmView, PasswordResetCompleteView
+    PasswordResetConfirmView, PasswordResetCompleteView, LogoutView
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from django.views.generic import CreateView
+from django.views.generic import CreateView, TemplateView
 
 from accounts.forms import UserCreateForm, UserPasswordReset
 
@@ -16,6 +16,7 @@ class SignUp(CreateView):
 
 class PasswordReset(PasswordResetView):
     template_name = 'registration/password_reset.html'
+    email_template_name = "registration/password_email.html"
     form_class = UserPasswordReset
     success_url = reverse_lazy('accounts:password_reset_done')
 
@@ -35,12 +36,21 @@ class LoginPageView(LoginView):
 
 
 class SentEmailReset(PasswordResetDoneView):
-    template_name = 'registration/sent_reset_password.html'
+    template_name = 'registration/sent_reset.html'
 
 
 class PasswordResetConfirm(PasswordResetConfirmView):
     template_name = 'registration/password_reset_confirm.html'
     success_url = reverse_lazy('accounts:password_reset_complete')
 
+
+
 class PasswordResetComplete(PasswordResetCompleteView):
     template_name = 'registration/password_reset_complete.html'
+
+class Dashboard(LoginRequiredMixin, TemplateView):
+    template_name = 'registration/dashboard.html'
+
+
+class Logout(LogoutView):
+    pass

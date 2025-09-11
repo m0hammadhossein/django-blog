@@ -1,10 +1,12 @@
+from django.utils.text import slugify
 from rest_framework import permissions, status
-from rest_framework.generics import ListAPIView, RetrieveAPIView, get_object_or_404, GenericAPIView
-from rest_framework.mixins import RetrieveModelMixin, CreateModelMixin, ListModelMixin
+from rest_framework.generics import ListAPIView, RetrieveAPIView, get_object_or_404, \
+    RetrieveUpdateAPIView, RetrieveUpdateDestroyAPIView, CreateAPIView, ListCreateAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from blog.api.serializers import PostSerializer, PostRetrieveSerializer, CategorySerializer, CommentSerializer
+from blog.api.serializers import PostSerializer, PostRetrieveSerializer, CategorySerializer, CommentSerializer, \
+    UserSerializer, CreatePostSerializer
 from blog.core.paginate import StandardResultsSetPagination
 from blog.models import Post, Category, Comment
 
@@ -44,7 +46,7 @@ class PostLike(APIView):
             return Response({'message': 'unliked'}, status=status.HTTP_200_OK)
 
 
-class PostComment(ListModelMixin, CreateModelMixin, GenericAPIView):
+class PostComment(ListCreateAPIView):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     serializer_class = CommentSerializer
     pagination_class = StandardResultsSetPagination
@@ -59,4 +61,39 @@ class PostComment(ListModelMixin, CreateModelMixin, GenericAPIView):
         serializer.save(author=self.request.user, post=Post(pk=self.kwargs['pk']))
 
     def get_queryset(self):
-        return Comment.objects.filter(is_approved=True, post__pk=self.kwargs['pk'])
+        return Comment.objects.filter(is_approved=True, post__pk=self.kwargs['pk']).select_related('author')
+
+
+class PostsAuthor(ListAPIView):
+    serializer_class = PostSerializer
+    permission_classes = (permissions.IsAdminUser,)
+    pagination_class = StandardResultsSetPagination
+
+    def get_queryset(self):
+        return Post.objects.filter(author=self.request.user)
+
+
+class PostAuthor(RetrieveUpdateDestroyAPIView):
+    serializer_class = CreatePostSerializer
+    permission_classes = (permissions.IsAdminUser,)
+    queryset = Post.objects.all()
+
+    def get_object(self):
+        return get_object_or_404(self.queryset, author=self.request.user, pk=self.kwargs['pk'])
+
+
+class UserProfile(RetrieveUpdateAPIView):
+    serializer_class = UserSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_object(self):
+        return self.request.user
+
+
+class NewPost(CreateAPIView):
+    serializer_class = CreatePostSerializer
+    permission_classes = (permissions.IsAdminUser,)
+    queryset = Post.objects.all()
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user, slug=slugify(serializer.validated_data['title'], allow_unicode=True))

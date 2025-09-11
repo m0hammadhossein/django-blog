@@ -1,5 +1,5 @@
+from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm, PasswordResetForm, AdminUserCreationForm, UserChangeForm
-from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
 from accounts.models import CustomUser
@@ -12,7 +12,7 @@ class UserCreateForm(UserCreationForm):
 
     def clean_email(self):
         email = self.cleaned_data['email']
-        if User.objects.filter(email__iexact=email).exists():
+        if get_user_model().objects.filter(email__iexact=email).exists():
             raise ValidationError("ایمیل قبلاً ثبت شده است.")
         return email
 
@@ -24,7 +24,7 @@ class CustomUserForm(AdminUserCreationForm):
 
     def clean_email(self):
         email = self.cleaned_data['email']
-        if User.objects.filter(email__iexact=email).exists():
+        if get_user_model().objects.filter(email__iexact=email).exists():
             raise ValidationError("ایمیل قبلاً ثبت شده است.")
         return email
 
@@ -40,6 +40,6 @@ class CustomUserChangeForm(UserChangeForm):
 class UserPasswordReset(PasswordResetForm):
     def clean_email(self):
         email = self.cleaned_data['email']
-        if not User.objects.filter(email__iexact=email).exists():
+        if not get_user_model().objects.filter(email__iexact=email).exists():
             raise ValidationError("ایمیل وجود ندارد.")
         return email

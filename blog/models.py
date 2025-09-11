@@ -6,8 +6,8 @@ from pilkit.processors import ResizeToFit
 
 
 class Post(models.Model):
-    title = models.CharField(null=False)
-    slug = models.SlugField(unique=True, allow_unicode=True)
+    title = models.CharField(unique=True, null=False)
+    slug = models.SlugField(unique=True, allow_unicode=True, null=False)
     author = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='posts')
     body = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
