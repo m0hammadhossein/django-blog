@@ -17,7 +17,7 @@ class Post(models.Model):
     comments = models.PositiveIntegerField(default=0)
     users_liked = models.ManyToManyField(get_user_model(), blank=True, related_name='liked_posts')
     status = models.CharField(max_length=10, choices=(('draft', 'Draft'), ('published', 'Published')))
-    category = models.ForeignKey('Category', on_delete=models.SET_NULL, null=True, blank=True, related_name='posts')
+    category = models.ForeignKey('Category', on_delete=models.CASCADE, null=False, blank=False, related_name='posts')
     featured_image = ProcessedImageField(
         upload_to='blog_images/%Y/%m/%d/',
         processors=[ResizeToFit(800, 800)],  # تغییر اندازه به حداکثر 800x800
