@@ -8,6 +8,7 @@ from rest_framework.views import APIView
 from blog.api.serializers import PostSerializer, PostRetrieveSerializer, CategorySerializer, CommentSerializer, \
     UserSerializer, CreatePostSerializer
 from blog.core.paginate import StandardResultsSetPagination
+from blog.core.throttle import CustomeThrottle
 from blog.models import Post, Category, Comment
 
 
@@ -30,6 +31,7 @@ class PostRetrieve(RetrieveAPIView):
 
 
 class PostLike(APIView):
+    throttle_classes = (CustomeThrottle,)
     permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request, pk):
@@ -47,6 +49,7 @@ class PostLike(APIView):
 
 
 class PostComment(ListCreateAPIView):
+    throttle_classes = (CustomeThrottle,)
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     serializer_class = CommentSerializer
     pagination_class = StandardResultsSetPagination
@@ -68,6 +71,7 @@ class PostsAuthor(ListAPIView):
 
 
 class PostAuthor(RetrieveUpdateDestroyAPIView):
+    throttle_classes = (CustomeThrottle,)
     serializer_class = CreatePostSerializer
     permission_classes = (permissions.IsAdminUser,)
     queryset = Post.objects.all()
@@ -85,6 +89,7 @@ class UserProfile(RetrieveUpdateAPIView):
 
 
 class NewPost(CreateAPIView):
+    throttle_classes = (CustomeThrottle,)
     serializer_class = CreatePostSerializer
     permission_classes = (permissions.IsAdminUser,)
     queryset = Post.objects.all()
