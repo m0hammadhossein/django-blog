@@ -51,12 +51,6 @@ class PostComment(ListCreateAPIView):
     serializer_class = CommentSerializer
     pagination_class = StandardResultsSetPagination
 
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-
     def perform_create(self, serializer):
         serializer.save(author=self.request.user, post=Post(pk=self.kwargs['pk']))
 
