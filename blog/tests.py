@@ -29,7 +29,7 @@ class TestBlog(APITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'home.html')
 
-    def test_posts_api(self):
+    def test_api_posts(self):
         response = self.client.get(reverse('posts_api'))
         data = response.json()
         self.assertEqual(response.status_code, 200)
